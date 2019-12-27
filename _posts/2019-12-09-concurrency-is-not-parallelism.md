@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 译 | Concurrency is not Parallelism
-last_modified_at: 2019-10-08
 category: Golang
 tags: Concurrency
 keywords:
