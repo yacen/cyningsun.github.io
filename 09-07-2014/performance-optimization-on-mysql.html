@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="sogou_site_verification" content="MQ6oTycfG3"/>
+<meta name="google-site-verification" content="hqIFVwBa7rWx4VpI_8SjaGCBNRD664DCU_Sulcvdit8" />
+
+<title>Mysql性能优化小结</title>
+<meta property="og:site_name" content="有疑者说">
+<meta property="article:publisher" content="https://www.cyningsun.com" />
+<meta property="article:author" content="https://www.cyningsun.com" />
+<meta property="article:published_time" content="2014-09-07 00:00:00 +0800"/>
+<meta property="og:url" content="/09-07-2014/performance-optimization-on-mysql.html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta itemprop="description" name="description" content="如何做性能优化？做好性能优化应该理解什么是性能优化。按照我的理解性能就是“从请求发起到得到响应所需要的时间”，而优化就是目标，是为了降低响应时间。
+1.选定优化目标(what)为了在有效的时间内做好性能优化达到成本与结果成正比，优化哪些目标同样重要。实际工作中所有的时间都是有成本的，理清轻重缓急与主次相当重要。根据阿姆">
+
+<meta name="keywords" content="mysql,性能优化">
+
+
+<link rel="stylesheet" href="/css/bootstrap.css">
+
+
+<link rel="stylesheet" href="/css/hc.css">
+
+<link rel="shortcut icon" href="/img/favicon.ico">
+<style>
+    html{ background:#eee; }
+    pre{white-space:pre-wrap;}
+
+    em{ text-transform:lowercase; color:#1abc9c; }
+    :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
+    em:hover{ color:inherit; }
+
+    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
+    #table{ margin-bottom:2em; color:#888; }
+
+    a,code {
+      word-break:break-all;
+    }
+
+    @media only screen and (max-width: 640px) {
+      table{ word-break:break-all;word-wrap:break-word;font-size:12px; }
+      .typo table th, .typo table td, .typo-table th, .typo-table td .typo table caption {
+        padding: 0.5em;
+      }
+      #fork{ display:none; }
+    }
+
+    ol.toc::before {
+      content: '目录';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.toc {
+        background: #fff;
+        overflow: hidden;
+        border: 1px solid #efefef;
+        color: #999;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.toc li {
+      padding: 2px 5px 2px 20px;
+    }
+
+    ol.toc ol {
+      list-style: circle;
+      padding: 0px 0px 0px 0px;
+    }
+</style>
+
+<link rel="stylesheet" href="/css/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fedff94a2e83a6e2a4d203129a3272e8";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>    
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-156665333-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-156665333-1');
+</script>
+  <meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/feed.xml" title="有疑者说" type="application/atom+xml">
+</head>
+  <body>
+    <div id = "wrapper">
+    <div class="nav-toggle"><i class="fa fa-bars fa-2x"></i> Herring Cove </div>
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <p class="navbar-brand">有疑者说 </p>
+        </div>
+        <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
+        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
+        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+        </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar-wrapper">
+  <ul class="sidebar-nav">
+    <li class="sidebar-brand"><a href="/"><h1 class="brand">有疑者说 </h1></a><h3>博学、慎思、明辨、笃行</h3></li>
+    <hr />
+    <li><a href="/archives">Archives</a></li>
+    <li><a href="/subjects">Subjects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/about">About</a></li>
+    <hr />
+    <div id="social-wrapper">
+      <li> <a href="http://weibo.com/CyningSun"  target="_blank"><i class="iconfont icon-weibo"></i> @Weibo</a></li>
+      <li> <a href="mailto:sunyinhangscut@gmail.com" ><i class="iconfont icon-gmail"></i> Gmail</a> </li>
+      <li> <a href="https://www.douban.com/people/cyningscut" target="_blank"><i class="iconfont icon-douban"></i> Douban</a></li>
+      <li> <a href="https://github.com/cyningsun" target="_blank"><i class="iconfont icon-github"></i> Github</a> </li>
+      <li><a href="/feed.xml" target="_blank"><i class="iconfont icon-rss"></i> RSS</a></li>
+    </div>
+  </ul>
+</div>
+      <div class="container">
+        <div id="article"  class="typo typo-selection">
+    <h1>Mysql性能优化小结</h1><br/>
+    <h2 id="tagline" class="serif"></h2>
+    <div class="post">
+        
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何做性能优化？"><span class="toc-text">如何做性能优化？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-选定优化目标-what"><span class="toc-text">1.选定优化目标(what)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、如何进行优化"><span class="toc-text">2、如何进行优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结一下："><span class="toc-text">总结一下：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql性能优化"><span class="toc-text">Mysql性能优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql性能优化小结"><span class="toc-text">Mysql性能优化小结</span></a></li></ol>
+ 
+        <h3 id="如何做性能优化？"><a href="#如何做性能优化？" class="headerlink" title="如何做性能优化？"></a>如何做性能优化？</h3><p>做好性能优化应该理解什么是性能优化。按照我的理解性能就是“从请求发起到得到响应所需要的时间”，而优化就是目标，是为了降低响应时间。</p>
+<h4 id="1-选定优化目标-what"><a href="#1-选定优化目标-what" class="headerlink" title="1.选定优化目标(what)"></a>1.选定优化目标(what)</h4><p>为了在有效的时间内做好性能优化达到成本与结果成正比，优化哪些目标同样重要。实际工作中所有的时间都是有成本的，理清轻重缓急与主次相当重要。根据阿姆达尔，对于一个时间比重占用不超过5%的查询进行优化，无论如何努力，收益也不会超过5%。例如，此次优化的选择：先用户侧后商户侧(前者对响应时间比较敏感)，先黄金路径接口后功能路径接口。</p>
+<h4 id="2、如何进行优化"><a href="#2、如何进行优化" class="headerlink" title="2、如何进行优化"></a>2、如何进行优化</h4><p>如果目标是降低响应时间，那么首先我们要弄清楚“时间都去哪儿了”，对症下药的方案也就比较明了。完成一项任务所需的时间一般分为两个部分：执行时间和等待时间。<br>如果想优化等待时间，最好的办法是测量和定位不同子任务花费的时间，然后选择一些耗时不正常的子任务优化。优化等待时间意味着等待是如何发生的，等待可能是由于不同子任务或者子系统间接影响导致，也可能由于磁盘I/O、CPU资源争抢、网络传输。更深入一点，如果业务程序是CPU消耗性的，可能系统调用也会影响响应时间。</p>
+<h4 id="总结一下："><a href="#总结一下：" class="headerlink" title="总结一下："></a>总结一下：</h4><blockquote>
+<p>1.优化值得优化的查询，优化成本大于收益时就应该停止。<br>2.弄清“时间都去哪儿了”，有的放矢</p>
+</blockquote>
+<p>另外，有时候平均响应时间很正常，但却掩盖了某些异常响应。举例说“医院所有病人的平均体温没有任何价值”。被掩盖的细节里能提供更多的信息。</p>
+<h3 id="Mysql性能优化"><a href="#Mysql性能优化" class="headerlink" title="Mysql性能优化"></a>Mysql性能优化</h3><p>Mysql性能优化同样基于以上原理进行，同时需要一些Mysql的基础知识。    </p>
+<blockquote>
+<p>1.Mysql索引的特性<br>2.Mysql工具explain、profile<br>3.Mysql的锁机制   </p>
+</blockquote>
+<h3 id="Mysql性能优化小结"><a href="#Mysql性能优化小结" class="headerlink" title="Mysql性能优化小结"></a>Mysql性能优化小结</h3><p>最好的优化永远是与业务关联的、最好的优化永远是良好的设计，所谓的优化只应该作为辅助和应对变更的方法，不应该把所有的任务放到优化阶段，不然所需要的消耗的时间将是指数级的！</p>
+<p>(完)</p>
+
+    </div>
+    
+<div class="post-subject">
+    
+</div>
+
+
+    <ul class="pager">
+     
+     <li class="next"><a href="/09-09-2014/data-persistence.html">Newer &rarr;</a></li>
+    
+    
+    <li class="previous"><a href="/08-17-2014/reading-mybatis-spring-source-code.html">&larr; Older</a></li>
+    
+</ul>
+    			<!-- Comment BEGIN -->
+      <div id="container"></div>
+      
+<link rel="stylesheet" href="/css/gitalk.css">
+
+      
+<script src="/js/gitalk.js"></script>
+
+      <script>
+      var gitalk = new Gitalk({
+        clientID: 'b8ff5ed1956f484a7a1f',
+        clientSecret: 'c540e05bc03d3cfbe6118be320578d3c14187d49',
+        accessToken: '39052cfef1bb33f9819fac29f2621df0f54cf32a',
+        owner: 'cyningsun',
+        repo: 'blog_comment',
+        admin: ['cyningsun'],
+        labels:['gitment'],
+        id: '2014-09-07 00:00:00 +0800',
+        distractionFreeMode: true  // Facebook-like distraction free mode
+      })
+      gitalk.render('container')
+      </script>
+
+
+<!-- Comment END -->
+</div>
+      </div>
+      <div class="container">
+  <footer>
+    <p class="text-muted credit">Copyright ©2020 cyningsun
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <a href="  https://www.cyningsun.com">Powered by Hexo</a></p>
+  </footer>
+</div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<script src="/js/hc.js"></script>
+
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<script src="/js/syntax.js"></script>
+
+  </body>
+</html>

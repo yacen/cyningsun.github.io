@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="sogou_site_verification" content="MQ6oTycfG3"/>
+<meta name="google-site-verification" content="hqIFVwBa7rWx4VpI_8SjaGCBNRD664DCU_Sulcvdit8" />
+
+<title>SGI-STL源码剖析之IntroSort</title>
+<meta property="og:site_name" content="有疑者说">
+<meta property="article:publisher" content="https://www.cyningsun.com" />
+<meta property="article:author" content="https://www.cyningsun.com" />
+<meta property="article:published_time" content="2011-04-09 00:00:00 +0800"/>
+<meta property="og:url" content="/04-09-2011/stl-introsort.html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta itemprop="description" name="description" content="Quick sortQuick sort 的精神在于将大区间分割为小区间，分段排序。每个小区间排序完成后，串接起来的大区间就完成了排序。最坏的情况发生在分割时产生出的一个空的子区间。 
+threshold（阈值）面对一个只有十来个元素的小序列，使用像 Quick sort 这样复杂而（可能）需要大量运算的排序算法，是否">
+
+<meta name="keywords" content="IntroSort,STL,sort">
+
+
+<link rel="stylesheet" href="/css/bootstrap.css">
+
+
+<link rel="stylesheet" href="/css/hc.css">
+
+<link rel="shortcut icon" href="/img/favicon.ico">
+<style>
+    html{ background:#eee; }
+    pre{white-space:pre-wrap;}
+
+    em{ text-transform:lowercase; color:#1abc9c; }
+    :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
+    em:hover{ color:inherit; }
+
+    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
+    #table{ margin-bottom:2em; color:#888; }
+
+    a,code {
+      word-break:break-all;
+    }
+
+    @media only screen and (max-width: 640px) {
+      table{ word-break:break-all;word-wrap:break-word;font-size:12px; }
+      .typo table th, .typo table td, .typo-table th, .typo-table td .typo table caption {
+        padding: 0.5em;
+      }
+      #fork{ display:none; }
+    }
+
+    ol.toc::before {
+      content: '目录';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.toc {
+        background: #fff;
+        overflow: hidden;
+        border: 1px solid #efefef;
+        color: #999;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.toc li {
+      padding: 2px 5px 2px 20px;
+    }
+
+    ol.toc ol {
+      list-style: circle;
+      padding: 0px 0px 0px 0px;
+    }
+</style>
+
+<link rel="stylesheet" href="/css/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fedff94a2e83a6e2a4d203129a3272e8";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>    
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-156665333-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-156665333-1');
+</script>
+  <meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/feed.xml" title="有疑者说" type="application/atom+xml">
+</head>
+  <body>
+    <div id = "wrapper">
+    <div class="nav-toggle"><i class="fa fa-bars fa-2x"></i> Herring Cove </div>
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <p class="navbar-brand">有疑者说 </p>
+        </div>
+        <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
+        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
+        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+        </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar-wrapper">
+  <ul class="sidebar-nav">
+    <li class="sidebar-brand"><a href="/"><h1 class="brand">有疑者说 </h1></a><h3>博学、慎思、明辨、笃行</h3></li>
+    <hr />
+    <li><a href="/archives">Archives</a></li>
+    <li><a href="/subjects">Subjects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/about">About</a></li>
+    <hr />
+    <div id="social-wrapper">
+      <li> <a href="http://weibo.com/CyningSun"  target="_blank"><i class="iconfont icon-weibo"></i> @Weibo</a></li>
+      <li> <a href="mailto:sunyinhangscut@gmail.com" ><i class="iconfont icon-gmail"></i> Gmail</a> </li>
+      <li> <a href="https://www.douban.com/people/cyningscut" target="_blank"><i class="iconfont icon-douban"></i> Douban</a></li>
+      <li> <a href="https://github.com/cyningsun" target="_blank"><i class="iconfont icon-github"></i> Github</a> </li>
+      <li><a href="/feed.xml" target="_blank"><i class="iconfont icon-rss"></i> RSS</a></li>
+    </div>
+  </ul>
+</div>
+      <div class="container">
+        <div id="article"  class="typo typo-selection">
+    <h1>SGI-STL源码剖析之IntroSort</h1><br/>
+    <h2 id="tagline" class="serif"></h2>
+    <div class="post">
+        
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Quick-sort"><span class="toc-text">Quick sort</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#threshold（阈值）"><span class="toc-text">threshold（阈值）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#introsort"><span class="toc-text">introsort</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SGI-STL-Sort-函数依赖关系"><span class="toc-text">SGI STL Sort 函数依赖关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SGI-STL-Sort-源码"><span class="toc-text">SGI STL Sort 源码</span></a></li></ol>
+ 
+        <h3 id="Quick-sort"><a href="#Quick-sort" class="headerlink" title="Quick sort"></a>Quick sort</h3><p>Quick sort 的精神在于将大区间分割为小区间，分段排序。每个小区间排序完成后，串接起来的大区间就完成了排序。最坏的情况发生在分割时产生出的一个空的子区间。 </p>
+<h3 id="threshold（阈值）"><a href="#threshold（阈值）" class="headerlink" title="threshold（阈值）"></a>threshold（阈值）</h3><p>面对一个只有十来个元素的小序列，使用像 Quick sort 这样复杂而（可能）需要大量运算的排序算法，是否划算？ </p>
+<p>在小数据量的情况下，甚至简单如 Insertion Sort 者也可能快过 Quick Sort ——因为 Quick Sort 会为了极小的子序列而产生许多的函数递归调用。监狱这种情况，适度的评估序列的大小然后决定采用 Quick Sort 或者 Insertion Sort 是值得采纳的一种优化措施 </p>
+<h3 id="introsort"><a href="#introsort" class="headerlink" title="introsort"></a>introsort</h3><p>不适当的枢轴选择，导致不当的分割，导致 Quick Sort 恶化为 O(N^2) 。混合式排序算法 Introspective Sorting( 内省式排序 ), 简称 IntroSort ，其行为在绝大部分情况下几乎与 median-of-3 Quick Sort 完全相同。但是当分割行为 (partitioning) 有恶化为二次行为的倾向时，能够自我侦测，转而改用 Heap Sort 。使其效率维持在 Heap Sort 的 O(N*logN), 又比一开始就用 Heap Sort 来得好。 </p>
+<h3 id="SGI-STL-Sort-函数依赖关系"><a href="#SGI-STL-Sort-函数依赖关系" class="headerlink" title="SGI STL Sort 函数依赖关系"></a>SGI STL Sort 函数依赖关系</h3><p><img src="/images/stl-introsort.gif" alt="stl-introsort.png"></p>
+<h3 id="SGI-STL-Sort-源码"><a href="#SGI-STL-Sort-源码" class="headerlink" title="SGI STL Sort 源码"></a>SGI STL Sort 源码</h3><pre><code class="hljs c++"><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> __stl_threhold=<span class="hljs-number">16</span>;         <span class="hljs-comment">// 阈值，用于评估序列大小</span>
+
+<span class="hljs-comment">// 千万注意： sort() 只适用于 RandomAccessIterator</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>&gt;
+<span class="hljs-title">inline</span> <span class="hljs-title">void</span> <span class="hljs-title">sort</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>, <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>) &#123;</span>
+  <span class="hljs-keyword">if</span> (first != last) &#123;
+    __introsort_loop (first, last, value_type(first), __lg (last - first) * <span class="hljs-number">2</span>);
+    __final_insertion_sort (first, last);
+  &#125;
+&#125;
+
+<span class="hljs-comment">//__lg() 用来控制分割恶化的情况。</span>
+<span class="hljs-comment">// 找出 2^k &lt;= n 的最大值 k 。例， n=7 ，得 k=2 ， n=20 ，得 k=4 ， n=8 ，得 k=3 。</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Size</span>&gt;
+<span class="hljs-title">inline</span> <span class="hljs-title">Size</span> __<span class="hljs-title">lg</span> (<span class="hljs-title">Size</span> <span class="hljs-title">n</span>) &#123;</span>
+  Size k;
+  <span class="hljs-keyword">for</span> (k = <span class="hljs-number">0</span>; n &gt; <span class="hljs-number">1</span>; n &gt;&gt;= <span class="hljs-number">1</span>) ++k;   
+  <span class="hljs-keyword">return</span> k;
+&#125;
+
+<span class="hljs-comment">// 完成后将返回母函数 sort() 在进入 __final_insertion_sort() 最终完成排序</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>, <span class="hljs-title">class</span> <span class="hljs-title">Size</span>&gt;
+<span class="hljs-title">void</span> __<span class="hljs-title">introsort_loop</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
+                      <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>, <span class="hljs-title">T</span>*,
+                      <span class="hljs-title">Size</span> <span class="hljs-title">depth_limit</span>) &#123;</span>
+  <span class="hljs-comment">// 以下， __stl_threshold 是个全局常数，稍早定义为 const int 16 。</span>
+  <span class="hljs-comment">// 判断序列大小，如果小于等于 16 使用 Quick Sort 的排序，留给 Insertion Sort 最终完成排序</span>
+  <span class="hljs-keyword">while</span> (last - first &gt; __stl_threshold ) &#123;
+    <span class="hljs-keyword">if</span> (depth_limit == <span class="hljs-number">0</span>) &#123;               <span class="hljs-comment">// 至此，切割恶化，改用 heapsort</span>
+      partial_sort (first, last, last);    <span class="hljs-comment">// partial_sort 是以 Heap Sort 实现</span>
+      <span class="hljs-keyword">return</span>;
+    &#125;
+    --depth_limit;
+    <span class="hljs-comment">// 以下是 median-of-three partition ，选择一个够好的枢轴并决定切割点。</span>
+    <span class="hljs-comment">// 切割点将落在迭代器 cut 身上。</span>
+    RandomAccessIterator cut = __unguarded_partition
+      (first, last, T( __median (*first, *(first + (last - first)/<span class="hljs-number">2</span>),
+                               *(last - <span class="hljs-number">1</span>))));
+    <span class="hljs-comment">// 对右半段递归进行 sort.</span>
+    __introsort_loop (cut, last, value_type(first), depth_limit);
+    last = cut;
+    <span class="hljs-comment">// 现在回到 while 循环，准备对左半段递归进行 sort.</span>
+    <span class="hljs-comment">// 这种写法可读性较差，效率并没有比较好。</span>
+  &#125;
+&#125;
+
+<span class="hljs-comment">// 以插入排序完成最后的排序</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>&gt;
+<span class="hljs-title">void</span> __<span class="hljs-title">final_insertion_sort</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
+                            <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>) &#123;</span>
+  <span class="hljs-keyword">if</span> (last - first &gt; __stl_threshold ) &#123;
+    <span class="hljs-comment">// 分为两段前者调用插入排序，因为后段的元素总是比前段大（由 Quick Sort 性质可知），所以先</span>
+    <span class="hljs-comment">// 调用前者完成前段排序，然后将后段从尾部遍历的方式插入已序的元素中</span>
+    __insertion_sort (first, first + __stl_threshold);
+    __unguarded_insertion_sort (first + __stl_threshold, last);
+  &#125;
+  <span class="hljs-keyword">else</span>
+    __insertion_sort (first, last);
+&#125;
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>&gt;
+<span class="hljs-title">inline</span> <span class="hljs-title">void</span> __<span class="hljs-title">unguarded_insertion_sort</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
+                                <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>) &#123;</span>
+  __unguarded_insertion_sort_aux (first, last, value_type(first));
+&#125;
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>, <span class="hljs-title">class</span> <span class="hljs-title">Compare</span>&gt;
+<span class="hljs-title">void</span> __<span class="hljs-title">unguarded_insertion_sort_aux</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
+                                    <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>,
+                                    <span class="hljs-title">T</span>*, <span class="hljs-title">Compare</span> <span class="hljs-title">comp</span>) &#123;</span>
+  <span class="hljs-keyword">for</span> (RandomAccessIterator i = first; i != last; ++i)
+    __unguarded_linear_insert(i, T(*i), comp);
+&#125;
+
+<span class="hljs-comment">// 对指定区域完成插入排序</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>&gt;
+<span class="hljs-title">void</span> __<span class="hljs-title">insertion_sort</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>, <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>) &#123;</span>
+  <span class="hljs-keyword">if</span> (first == last) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">for</span> (RandomAccessIterator i = first + <span class="hljs-number">1</span>; i != last; ++i)   <span class="hljs-comment">// 外循环</span>
+    __linear_insert (first, i, value_type(first));    <span class="hljs-comment">// first,i 形成一个子范围</span>
+&#125;
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>&gt;
+<span class="hljs-title">inline</span> <span class="hljs-title">void</span> __<span class="hljs-title">linear_insert</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
+                                  <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>, <span class="hljs-title">T</span>*) &#123;</span>
+  T value = *last;      <span class="hljs-comment">// 记录尾元素</span>
+  <span class="hljs-keyword">if</span> (value &lt; *first) &#123; <span class="hljs-comment">// 尾比头还小（那就别一个个比较了，一次做完…）</span>
+    copy_backward (first, last, last + <span class="hljs-number">1</span>); <span class="hljs-comment">// 将整个范围向右递移一个位置</span>
+    *first = value;      <span class="hljs-comment">// 令头元素等于原先的尾元素值</span>
+  &#125;
+  <span class="hljs-keyword">else</span>
+     __unguarded_linear_insert (last, value);
+&#125;
+
+<span class="hljs-comment">// 由末尾遍历，将数据插入到已序元素中去。</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>&gt;
+<span class="hljs-title">void</span> __<span class="hljs-title">unguarded_linear_insert</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>, <span class="hljs-title">T</span> <span class="hljs-title">value</span>) &#123;</span>
+  RandomAccessIterator next = last;
+  --next;
+  <span class="hljs-keyword">while</span> (value &lt; *next) &#123;  
+    *last = *next;      
+    last = next;        
+    --next;             
+  &#125;
+  *last = value;
+&#125;
+
+<span class="hljs-comment">// 传回 a,b,c 之居中者</span>
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">T</span>&gt;
+<span class="hljs-title">inline</span> <span class="hljs-title">const</span> <span class="hljs-title">T</span>&amp; __<span class="hljs-title">median</span> (<span class="hljs-title">const</span> <span class="hljs-title">T</span>&amp; <span class="hljs-title">a</span>, <span class="hljs-title">const</span> <span class="hljs-title">T</span>&amp; <span class="hljs-title">b</span>, <span class="hljs-title">const</span> <span class="hljs-title">T</span>&amp; <span class="hljs-title">c</span>) &#123;</span>
+  <span class="hljs-keyword">if</span> (a &lt; b)
+    <span class="hljs-keyword">if</span> (b &lt; c)      <span class="hljs-comment">// a &lt; b &lt; c</span>
+      <span class="hljs-keyword">return</span> b;     
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a &lt; c) <span class="hljs-comment">// a &lt; b, b &gt;= c, a &lt; c</span>
+      <span class="hljs-keyword">return</span> c;
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">return</span> a;
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a &lt; c)   <span class="hljs-comment">// c &gt; a &gt;= b</span>
+    <span class="hljs-keyword">return</span> a;       
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b &lt; c)       <span class="hljs-comment">// a &gt;= b, a &gt;= c, b &lt; c</span>
+    <span class="hljs-keyword">return</span> c;
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-keyword">return</span> b;
+&#125;
+
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>&gt;
+<span class="hljs-title">RandomAccessIterator</span> __<span class="hljs-title">unguarded_partition</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
+                                           <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>,
+                                           <span class="hljs-title">T</span> <span class="hljs-title">pivot</span>) &#123;</span>
+  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;
+    <span class="hljs-keyword">while</span> (*first &lt; pivot) ++first;    <span class="hljs-comment">// first 找到 &gt;= pivot 的元素，就停下来</span>
+    --last;                     <span class="hljs-comment">// 调整</span>
+    <span class="hljs-keyword">while</span> (pivot &lt; *last) --last; <span class="hljs-comment">// last 找到 &lt;= pivot 的元素，就停下来</span>
+    <span class="hljs-comment">// 注意，以下 first &lt; last 判断动作，只适用于 random iterator</span>
+    <span class="hljs-keyword">if</span> (!(first &lt; last)) <span class="hljs-keyword">return</span> first;    <span class="hljs-comment">// 交错，结束循环。</span>
+    iter_swap (first, last);               <span class="hljs-comment">// 大小值交换</span>
+    ++first;                       <span class="hljs-comment">// 调整</span>
+  &#125;
+&#125;</code></pre>
+    </div>
+    
+<div class="post-subject">
+    
+    <a href="/subjects#STL" rel="category"># STL</a>
+    
+</div>
+
+
+    <ul class="pager">
+     
+     <li class="next"><a href="/04-25-2011/stl-rotate.html">Newer &rarr;</a></li>
+    
+    
+    <li class="previous"><a href="/04-08-2011/stl-list-sort.html">&larr; Older</a></li>
+    
+</ul>
+    			<!-- Comment BEGIN -->
+      <div id="container"></div>
+      
+<link rel="stylesheet" href="/css/gitalk.css">
+
+      
+<script src="/js/gitalk.js"></script>
+
+      <script>
+      var gitalk = new Gitalk({
+        clientID: 'b8ff5ed1956f484a7a1f',
+        clientSecret: 'c540e05bc03d3cfbe6118be320578d3c14187d49',
+        accessToken: '39052cfef1bb33f9819fac29f2621df0f54cf32a',
+        owner: 'cyningsun',
+        repo: 'blog_comment',
+        admin: ['cyningsun'],
+        labels:['gitment'],
+        id: '2011-04-09 00:00:00 +0800',
+        distractionFreeMode: true  // Facebook-like distraction free mode
+      })
+      gitalk.render('container')
+      </script>
+
+
+<!-- Comment END -->
+</div>
+      </div>
+      <div class="container">
+  <footer>
+    <p class="text-muted credit">Copyright ©2020 cyningsun
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <a href="  https://www.cyningsun.com">Powered by Hexo</a></p>
+  </footer>
+</div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<script src="/js/hc.js"></script>
+
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<script src="/js/syntax.js"></script>
+
+  </body>
+</html>
