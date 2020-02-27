@@ -31,7 +31,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -69,6 +69,25 @@
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -113,9 +132,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -141,7 +161,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>深入理解Mybatis-Spring工作原理</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -153,6 +173,7 @@ gtag('config', 'UA-156665333-1');
 <pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.mybatis.spring.mapper.MapperScannerConfigurer"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"basePackage"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">""</span> /&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></code></pre>
+
 <p>入口类为MapperScannerConfigurer, 该类实现了BeanDefinitionRegistryPostProcessor接口用来查找Mapper类，然后将MapperFactoryBean设置为Mapper的<br>实现类。MapperFactoryBean是一个代理类，会根据Mapper信息通过sqlSession获取对应Mapper的实例。以上就是Mybatis-Spring的所有任务。</p>
 <h4 id="MapperScannerConfigurer如何查找Mapper"><a href="#MapperScannerConfigurer如何查找Mapper" class="headerlink" title="MapperScannerConfigurer如何查找Mapper"></a>MapperScannerConfigurer如何查找Mapper</h4><p>了解Mapper查找的原理，首先要了解BeanDefinitionRegistryPostProcessor接口。开发人员通过 XML 文件或者 Annotation 预定义配置 bean 的各种属性后，启动 Spring 容器，Spring 容器会首先解析这些配置属性，生成对应都 Bean Definition，装入到 DefaultListableBeanFactory 对象的属性容器中去。Spring 框架会根据配置，过滤出 BeanDefinitionRegistryPostProcessor 类型的 Bean 定义，并通过 Spring 框架生成其对应的 Bean 对象。Spring 容器会在实例化开发人员所定义的 Bean 前先调用该 processor 的 postProcessBeanDefinitionRegistry(…) 方法。此处可以操作和配置Bean Definition。下面是MapperScannerConfigurer的源码</p>
 <pre><code class="hljs java"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postProcessBeanDefinitionRegistry</span><span class="hljs-params">(BeanDefinitionRegistry registry)</span> <span class="hljs-keyword">throws</span> BeansException </span>&#123;
@@ -173,6 +194,7 @@ gtag('config', 'UA-156665333-1');
    scanner.registerFilters();
    scanner.scan(StringUtils.tokenizeToStringArray(<span class="hljs-keyword">this</span>.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
  &#125;</code></pre>
+
 <p>ClassPathMapperScanner继承了ClassPathBeanDefinitionScanner，scanner.scan()语句会调用ClassPathMapperScanner的doScan函数。然后此函数中将MapperFactoryBean设置为查找到的Mapper的实现类</p>
 <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;BeanDefinitionHolder&gt; <span class="hljs-title">doScan</span><span class="hljs-params">(String... basePackages)</span> </span>&#123;
    Set&lt;BeanDefinitionHolder&gt; beanDefinitions = <span class="hljs-keyword">super</span>.doScan(basePackages);
@@ -216,12 +238,14 @@ gtag('config', 'UA-156665333-1');
 
    <span class="hljs-keyword">return</span> beanDefinitions;
  &#125;</code></pre>
+
 <p>然后就是MapperFactoryBean根据实例化的信息创建对应的Mapper实例了</p>
 <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> T <span class="hljs-title">getObject</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
   <span class="hljs-keyword">return</span> getSqlSession().getMapper(<span class="hljs-keyword">this</span>.mapperInterface);
 &#125;</code></pre>
+
 <p>就这样Mybatis-Spring省去了手工配置Mapper，帮助开发者实现自动的配置，使得开发快速。</p>
-<h4 id="Mybatis涉及的主要类"><a href="#Mybatis涉及的主要类" class="headerlink" title="Mybatis涉及的主要类"></a>Mybatis涉及的主要类</h4><p>MapperScannerConfigurer — ClassPathMapperScanner — MapperFactoryBean</p>
+<h4 id="Mybatis涉及的主要类"><a href="#Mybatis涉及的主要类" class="headerlink" title="Mybatis涉及的主要类"></a>Mybatis涉及的主要类</h4><p>MapperScannerConfigurer – ClassPathMapperScanner – MapperFactoryBean</p>
 <p>(完)</p>
 
     </div>
@@ -229,6 +253,10 @@ gtag('config', 'UA-156665333-1');
 <div class="post-subject">
     
 </div>
+
+
+    
+
 
 
     <ul class="pager">
@@ -239,7 +267,10 @@ gtag('config', 'UA-156665333-1');
     <li class="previous"><a href="/07-04-2014/inside-log4j.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

@@ -32,7 +32,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -70,6 +70,25 @@
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -114,9 +133,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -142,7 +162,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>CSS标准(1)-特性和值</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -168,7 +188,7 @@ style="" /* a=1 b=0 c=0 d=0 -&gt; specificity = 1,0,0,0 */</code></pre>
 <p>1.用户端声明( UA declarations )<br>2.一般用户声明( user normal declarations )<br>3.一般作者声明( author normal declarations )<br>4.加了 ‘!important’ 的作者声明( author important declarations )<br>5.加了 ‘!important’ 的用户声明( user important declarations ) </p>
 </blockquote>
 <p>2.拥有相同重要性和来源的规则，按照 CSS specificity 来排序。<br>3.最后，根据先后次序来排列：如果两条规则具有相同的权重，相同的来源和相同的选择器特殊性，则后出现的规则超越先出现的规则.  </p>
-<h3 id="CSS-尺寸"><a href="#CSS-尺寸" class="headerlink" title="CSS 尺寸"></a>CSS 尺寸</h3><p><strong>em</strong>：em指字体高，任意浏览器的默认字体高都是16px。所以未经调整的浏览器都符合：1em=16px。那么12px=0.75em。但是em并不是固定的，它会继承父级元素的字体大小。<br><strong>pt</strong>：pt是一个绝对值,它等于1/72英寸。在css中pt要在屏幕上显示，必须先把以 pt 为单位的长度转换为以像素为单位的长度。例如，无论在哪个操作系统中，Firefox 浏览器默认的 DPI 都是 96，那么实际上 9pt = 9 <em> 1/72 </em> 96 = 12px。  </p>
+<h3 id="CSS-尺寸"><a href="#CSS-尺寸" class="headerlink" title="CSS 尺寸"></a>CSS 尺寸</h3><p><strong>em</strong>：em指字体高，任意浏览器的默认字体高都是16px。所以未经调整的浏览器都符合：1em=16px。那么12px=0.75em。但是em并不是固定的，它会继承父级元素的字体大小。<br><strong>pt</strong>：pt是一个绝对值,它等于1/72英寸。在css中pt要在屏幕上显示，必须先把以 pt 为单位的长度转换为以像素为单位的长度。例如，无论在哪个操作系统中，Firefox 浏览器默认的 DPI 都是 96，那么实际上 9pt = 9 * 1/72 * 96 = 12px。  </p>
 <blockquote>
 <p>虽然pt是绝对单位，但是那只是针对输出设备而言的，在文字排版工具（word，abobe）中是非常有用的字体单位。不管显示器的分辨率是多少，打印在纸面上的结果是一样的。但是网页主要为了屏幕显示，而不是为了打印等其他需要的。</p>
 </blockquote>
@@ -184,15 +204,22 @@ style="" /* a=1 b=0 c=0 d=0 -&gt; specificity = 1,0,0,0 */</code></pre>
 </div>
 
 
+    
+
+
+
     <ul class="pager">
      
-     <li class="next"><a href="/04-18-2014/basic-knowledge-about-android-screen.html">Newer &rarr;</a></li>
+     <li class="next"><a href="/04-19-2014/css-standard-two.html">Newer &rarr;</a></li>
     
     
-    <li class="previous"><a href="/04-17-2014/Multiplexing-in-Thrift-Enhancing-Thrift-to-Meet-Enterprise-Expectations.html">&larr; Older</a></li>
+    <li class="previous"><a href="/04-18-2014/basic-knowledge-about-android-screen.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

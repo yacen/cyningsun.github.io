@@ -33,7 +33,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -71,6 +71,25 @@
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -115,9 +134,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -143,7 +163,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>STL算法我实现之排列</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -155,7 +175,8 @@ gtag('config', 'UA-156665333-1');
 <p>一、如果数组k以后的是一个递减序列，则仅依靠调换k以后的元素不可能完成任务，所以必须找到满足k&gt;k+1的元素，即保证k以后的序列不递减。</p>
 <p>二、满足一之后，那么下一个序列的第k位一定是从后面找到刚好比a[k]大的一个比a[k]大的一个数打头的（为了保证刚好大于，又k+1之后的元素递减，所以从数组尾开始找到第一个比a[k]大的元素即可满足要求）。将这个数的索引记为j。</p>
 <p>三、将a[j]与a[k]对调。此时，j后面的元素是降序的。所以需要把j后面的逆转一下，从降序到升序，如此就得到了恰好比之前序列大一号的序列。</p>
-<p>代码：next_permutation<br><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">nextPermutation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> <span class="hljs-built_in">array</span>[],<span class="hljs-keyword">int</span> len)</span>
+<p>代码：next_permutation</p>
+<pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">nextPermutation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> <span class="hljs-built_in">array</span>[],<span class="hljs-keyword">int</span> len)</span>
 </span>&#123;
     <span class="hljs-keyword">int</span> endi=len<span class="hljs-number">-1</span>;
     <span class="hljs-keyword">int</span> endii;
@@ -178,8 +199,10 @@ gtag('config', 'UA-156665333-1');
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
         &#125;
     &#125;
-&#125;</code></pre></p>
-<p>代码：prev_permutation<br><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">prevPermutation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> <span class="hljs-built_in">array</span>[],<span class="hljs-keyword">int</span> len)</span>
+&#125;</code></pre>
+
+<p>代码：prev_permutation</p>
+<pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">prevPermutation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> <span class="hljs-built_in">array</span>[],<span class="hljs-keyword">int</span> len)</span>
 </span>&#123;
     <span class="hljs-keyword">int</span> endi=len<span class="hljs-number">-1</span>;
     <span class="hljs-keyword">int</span> endii;
@@ -202,8 +225,7 @@ gtag('config', 'UA-156665333-1');
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
         &#125;
     &#125;
-&#125;</code></pre></p>
-
+&#125;</code></pre>
     </div>
     
 <div class="post-subject">
@@ -211,6 +233,25 @@ gtag('config', 'UA-156665333-1');
     <a href="/subjects#STL" rel="category"># STL</a>
     
 </div>
+
+
+    
+
+
+
+  <ol class="related">
+      
+            <li><span><a href="/05-08-2012/stl-shuffle.html">STL算法我实现之随机洗牌</a></span></li>
+          
+            <li><span><a href="/04-25-2011/stl-rotate.html">STL算法我实现之rotate</a></span></li>
+          
+            <li><span><a href="/04-09-2011/stl-introsort.html">SGI-STL源码剖析之IntroSort</a></span></li>
+          
+            <li><span><a href="/04-08-2011/stl-list-sort.html">SGI-STL源码剖析之list::sort()</a></span></li>
+          
+            <li><span><a href="/04-04-2011/stl-heap.html">SGI-STL源码剖析之Heap</a></span></li>
+          
+  </ol>
 
 
     <ul class="pager">
@@ -221,7 +262,10 @@ gtag('config', 'UA-156665333-1');
     <li class="previous"><a href="/04-19-2012/bitwise-operation.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

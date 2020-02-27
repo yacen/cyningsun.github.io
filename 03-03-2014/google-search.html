@@ -36,7 +36,7 @@ Google Blog Search: 搜索博客和博客文章的。Google Book Searc">
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -74,6 +74,25 @@ Google Blog Search: 搜索博客和博客文章的。Google Book Searc">
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -118,9 +137,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -146,7 +166,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>Google搜索技巧</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -158,7 +178,7 @@ gtag('config', 'UA-156665333-1');
 <li>尽可能使用准确的keyword描述搜索内容   </li>
 <li>使用操作符缩小搜索范围：site、filetype、allintext、intext   </li>
 <li>使用专业相关的引擎搜索：  <blockquote>
-<p><a href="http://www.google.com.hk/blogsearch" target="_blank" rel="noopener">Google Blog Search</a>: 搜索博客和博客文章的。<br><a href="http://books.google.com.hk/?hl=zh-CN&amp;sourceid=cnhp" target="_blank" rel="noopener">Google Book Search</a>: 搜索成千上万的小说和非小说类图书的全文。<br><a href="http://www.googlinux.com/" target="_blank" rel="noopener">Google Linux Search</a>: 搜索大量与Linux相关的网站。<br><a href="http://www.google.com.hk/schhp?hl=zh-CN" target="_blank" rel="noopener">Google Scholar</a>:在一个有着学术杂志、文章、报纸、论文和书籍的数据库中进行搜索，也能够选择大学或研究书库。  </p>
+<p><a href="http://www.google.com.hk/blogsearch" target="_blank" rel="noopener">Google Blog Search</a>: 搜索博客和博客文章的。<br><a href="http://books.google.com.hk/?hl=zh-CN&sourceid=cnhp" target="_blank" rel="noopener">Google Book Search</a>: 搜索成千上万的小说和非小说类图书的全文。<br><a href="http://www.googlinux.com/" target="_blank" rel="noopener">Google Linux Search</a>: 搜索大量与Linux相关的网站。<br><a href="http://www.google.com.hk/schhp?hl=zh-CN" target="_blank" rel="noopener">Google Scholar</a>:在一个有着学术杂志、文章、报纸、论文和书籍的数据库中进行搜索，也能够选择大学或研究书库。  </p>
 </blockquote>
 </li>
 </ol>
@@ -175,6 +195,10 @@ gtag('config', 'UA-156665333-1');
 </div>
 
 
+    
+
+
+
     <ul class="pager">
      
      <li class="next"><a href="/03-21-2014/study-skills.html">Newer &rarr;</a></li>
@@ -183,7 +207,10 @@ gtag('config', 'UA-156665333-1');
     <li class="previous"><a href="/02-28-2014/Velocity-Resource-Load.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

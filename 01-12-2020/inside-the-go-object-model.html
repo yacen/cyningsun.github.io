@@ -32,7 +32,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -70,6 +70,25 @@
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -114,9 +133,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -142,7 +162,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>深度探索 Go 对象模型</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -173,7 +193,8 @@ gtag('config', 'UA-156665333-1');
 <p>下面分别从 struct 和 interface 来解释模型如何支持以上两部分。</p>
 <h3 id="Struct-语意学"><a href="#Struct-语意学" class="headerlink" title="Struct 语意学"></a>Struct 语意学</h3><p><img src="/images/go-object-model/struct.png" alt="struct.png"></p>
 <p>面向对象编程，把对象作为程序的基本单元，一个对象包含了数据和操作数据的函数，前者为成员变量，后者为成员函数。所以研究对象需要分别从成员变量和成员函数入手。</p>
-<h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><p>以下有三段程序：<br><pre><code class="hljs go"><span class="hljs-comment">// First: global varible</span>
+<h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><p>以下有三段程序：</p>
+<pre><code class="hljs go"><span class="hljs-comment">// First: global varible</span>
 <span class="hljs-keyword">var</span> (
    X,Y,Z <span class="hljs-keyword">float32</span>
 )
@@ -196,24 +217,30 @@ gtag('config', 'UA-156665333-1');
 <span class="hljs-keyword">type</span> point3d <span class="hljs-keyword">struct</span> &#123;
 	point2d
 	Z <span class="hljs-keyword">float32</span>
-&#125;</code></pre><br>从风格来看，三段程序截然不同。有许多令人信服的讨论告诉我们，为什么“数据封装”（Second &amp; Third）要比使用“全局变量”好。但，从程序员的角度看，会有几个疑问：</p>
+&#125;</code></pre>
+<p>从风格来看，三段程序截然不同。有许多令人信服的讨论告诉我们，为什么“数据封装”（Second &amp; Third）要比使用“全局变量”好。但，从程序员的角度看，会有几个疑问：</p>
 <blockquote>
 <ol>
 <li>“数据封装” 之后，内存成本增加了多少？</li>
 <li>“数据封装” 之后，在执行过程中，变量的存储效率是否降低了？</li>
 </ol>
 </blockquote>
-<h5 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h5><p>先看内存变化。了解内存变化最好的办法就是通过代码打印对象的内存大小，先看全局变量大小<br><pre><code class="hljs go"><span class="hljs-keyword">var</span> (
+<h5 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h5><p>先看内存变化。了解内存变化最好的办法就是通过代码打印对象的内存大小，先看全局变量大小</p>
+<pre><code class="hljs go"><span class="hljs-keyword">var</span> (
 	X, Y, Z <span class="hljs-keyword">float32</span>
 )
 
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
 	fmt.Printf(<span class="hljs-string">"X size:%v, Y size:%v, Z size:%v\n"</span>, unsafe.Sizeof(X), unsafe.Sizeof(Y), unsafe.Sizeof(Z))
 	fmt.Printf(<span class="hljs-string">"X addr:%v, Y addr:%v, Z addr:%v\n"</span>, &amp;X, &amp;Y, &amp;Z)
-&#125;</code></pre><br>执行程序输出为：<br><pre><code class="hljs sh">$ go run variable.go
+&#125;</code></pre>
+<p>执行程序输出为：</p>
+<pre><code class="hljs sh">$ go run variable.go
 X size:4, Y size:4, Z size:4
-X addr:0x118ee88, Y addr:0x118ee8c, Z addr:0x118ee90</code></pre><br>可以看到，X、Y、Z三个字段大小均为4字节，且三个字段内存地址顺序排列。</p>
-<p>再看第二段代码的输出<br><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestLayout</span><span class="hljs-params">(t *testing.T)</span></span> &#123;
+X addr:0x118ee88, Y addr:0x118ee8c, Z addr:0x118ee90</code></pre>
+<p>可以看到，X、Y、Z三个字段大小均为4字节，且三个字段内存地址顺序排列。</p>
+<p>再看第二段代码的输出</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestLayout</span><span class="hljs-params">(t *testing.T)</span></span> &#123;
 	p := point3d&#123;X: <span class="hljs-number">1</span>, Y: <span class="hljs-number">2</span>, Z: <span class="hljs-number">3</span>&#125;
 	fmt.Printf(<span class="hljs-string">"point3d size:%v, align:%v\n"</span>, unsafe.Sizeof(p), unsafe.Alignof(p))
 	typ := reflect.TypeOf(p)
@@ -221,15 +248,19 @@ X addr:0x118ee88, Y addr:0x118ee8c, Z addr:0x118ee90</code></pre><br>可以看�
 	fmt.Printf(<span class="hljs-string">"X at offset %v, size=%d\n"</span>, unsafe.Offsetof(p.X), unsafe.Sizeof(p.X))
 	fmt.Printf(<span class="hljs-string">"Y at offset %v, size=%d\n"</span>, unsafe.Offsetof(p.Y), unsafe.Sizeof(p.Y))
 	fmt.Printf(<span class="hljs-string">"Z at offset %v, size=%d\n"</span>, unsafe.Offsetof(p.Z), unsafe.Sizeof(p.Z))
-&#125;</code></pre></p>
-<p>执行程序输出为：<br><pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestLayout
+&#125;</code></pre>
+
+<p>执行程序输出为：</p>
+<pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestLayout
 === RUN   TestLayout
 point3d size:12, align:4
 Struct:point3d is 12 bytes long
 X at offset 0, size=4
 Y at offset 4, size=4
-Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小一样为4字节，内存排列也与上一个版本一样。</p>
-<p>继续，第三段代码<br><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestLayout</span><span class="hljs-params">(t *testing.T)</span></span> &#123;
+Z at offset 8, size=4</code></pre>
+<p>可以看到，X、Y、Z三个字段大小一样为4字节，内存排列也与上一个版本一样。</p>
+<p>继续，第三段代码</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestLayout</span><span class="hljs-params">(t *testing.T)</span></span> &#123;
 	p := point3d&#123;point2d: point2d&#123;point: point&#123;X: <span class="hljs-number">1</span>&#125;, Y: <span class="hljs-number">2</span>&#125;, Z: <span class="hljs-number">3</span>&#125;
 	fmt.Printf(<span class="hljs-string">"point3d size:%v, align:%v\n"</span>, unsafe.Sizeof(p), unsafe.Alignof(p))
 	typ := reflect.TypeOf(p)
@@ -237,17 +268,21 @@ Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小
 	fmt.Printf(<span class="hljs-string">"X at offset %v, size=%d\n"</span>, unsafe.Offsetof(p.X), unsafe.Sizeof(p.X))
 	fmt.Printf(<span class="hljs-string">"Y at offset %v, size=%d\n"</span>, unsafe.Offsetof(p.Y), unsafe.Sizeof(p.Y))
 	fmt.Printf(<span class="hljs-string">"Z at offset %v, size=%d\n"</span>, unsafe.Offsetof(p.Z), unsafe.Sizeof(p.Z))
-&#125;</code></pre></p>
-<p>执行程序输出为：<br><pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestLayout
+&#125;</code></pre>
+
+<p>执行程序输出为：</p>
+<pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestLayout
 === RUN   TestLayout
 point3d size:12, align:4
 Struct:point3d is 12 bytes long
 X at offset 0, size=4
 Y at offset 4, size=4
-Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小一样为4字节，内存排列也与之前两个版本一样。</p>
+Z at offset 8, size=4</code></pre>
+<p>可以看到，X、Y、Z三个字段大小一样为4字节，内存排列也与之前两个版本一样。</p>
 <p>综上所述，我们可以看到，无论是否封装，还是多深的继承层次，对成员变量的内存布局都并无影响，均按照字段定义的顺序排列（不考虑内存对齐的情况）。即内存布局类似如下：</p>
 <p><img src="/images/go-object-model/memory-offset.png" alt="memory-offset.png"></p>
-<h5 id="变量存取"><a href="#变量存取" class="headerlink" title="变量存取"></a>变量存取</h5><p>成员变量有两种读取方式，既可以通过对象读取，也可以通过对象的指针读取。两种读取方式与直接变量读取会有什么不同么？使用一段代码再看下：<br><pre><code class="hljs go"><span class="hljs-keyword">type</span> point <span class="hljs-keyword">struct</span> &#123;
+<h5 id="变量存取"><a href="#变量存取" class="headerlink" title="变量存取"></a>变量存取</h5><p>成员变量有两种读取方式，既可以通过对象读取，也可以通过对象的指针读取。两种读取方式与直接变量读取会有什么不同么？使用一段代码再看下：</p>
+<pre><code class="hljs go"><span class="hljs-keyword">type</span> point <span class="hljs-keyword">struct</span> &#123;
 	X <span class="hljs-keyword">float32</span>
 &#125;
 
@@ -271,8 +306,10 @@ Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小
 	fmt.Printf(<span class="hljs-string">"w:%f\n"</span>, w)
 	w = p.Y     <span class="hljs-comment">// L29</span>
 	fmt.Printf(<span class="hljs-string">"w:%f\n"</span>, w)
-&#125;</code></pre></p>
-<p>还记得之前提过的“编译”阶段么？我们使用 go tool 可以查看源代码汇编之后的代码<br><pre><code class="hljs x86asm"><span class="hljs-symbol">data_access.go:</span><span class="hljs-number">25</span>	<span class="hljs-number">0x10948d8</span>	f30f11442444		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x44</span>(<span class="hljs-built_in">SP</span>)
+&#125;</code></pre>
+
+<p>还记得之前提过的“编译”阶段么？我们使用 go tool 可以查看源代码汇编之后的代码</p>
+<pre><code class="hljs x86asm"><span class="hljs-symbol">data_access.go:</span><span class="hljs-number">25</span>	<span class="hljs-number">0x10948d8</span>	f30f11442444		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x44</span>(<span class="hljs-built_in">SP</span>)
 <span class="hljs-symbol">data_access.go:</span><span class="hljs-number">25</span>	<span class="hljs-number">0x10948de</span>	f30f11442448		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x48</span>(<span class="hljs-built_in">SP</span>)
 <span class="hljs-symbol">data_access.go:</span><span class="hljs-number">25</span>	<span class="hljs-number">0x10948e4</span>	f30f1144244c		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x4c</span>(<span class="hljs-built_in">SP</span>)
 <span class="hljs-symbol">data_access.go:</span><span class="hljs-number">25</span>	<span class="hljs-number">0x10948ea</span>	f30f10055ab50400	<span class="hljs-keyword">MOVSS</span> $f32<span class="hljs-number">.</span>3f800000(SB), X0	
@@ -289,8 +326,10 @@ Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小
 <span class="hljs-symbol">data_access.go:</span><span class="hljs-number">29</span>	<span class="hljs-number">0x10949c7</span>	488b442450		<span class="hljs-keyword">MOVQ</span> <span class="hljs-number">0x50</span>(<span class="hljs-built_in">SP</span>), <span class="hljs-built_in">AX</span>	// 读取 对象地址 到寄存器 <span class="hljs-built_in">AX</span> 		
 <span class="hljs-symbol">data_access.go:</span><span class="hljs-number">29</span>	<span class="hljs-number">0x10949cc</span>	<span class="hljs-number">8400</span>			TESTB <span class="hljs-built_in">AL</span>, <span class="hljs-number">0</span>(<span class="hljs-built_in">AX</span>)	
 <span class="hljs-symbol">data_access.go:</span><span class="hljs-number">29</span>	<span class="hljs-number">0x10949ce</span>	f30f104004		<span class="hljs-keyword">MOVSS</span> <span class="hljs-number">0x4</span>(<span class="hljs-built_in">AX</span>), X0	// 从对象起始地址偏移<span class="hljs-number">4</span>字节读取数据到寄存器 X0 	
-<span class="hljs-symbol">data_access.go:</span><span class="hljs-number">29</span>	<span class="hljs-number">0x10949d3</span>	f30f11442440		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x40</span>(<span class="hljs-built_in">SP</span>)	// 赋值 寄存器 X0 给 w</code></pre><br>可以看到，每个成员变量的偏移量在编译时即可获知，不管其有多么复杂的继承，都是一样的。通过对象存取一个data member，其效率和存取一个非成员变量是一样的。</p>
-<h4 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h4><p>前面的例子提过，对象的总大小刚好等于所有的成员变量之和，也就意味着成员函数并不占用对象的内存大小。那成员函数的调用是怎么实现的呢？我们通过一段代码看下<br><pre><code class="hljs go"><span class="hljs-keyword">type</span> point3d <span class="hljs-keyword">struct</span> &#123;
+<span class="hljs-symbol">data_access.go:</span><span class="hljs-number">29</span>	<span class="hljs-number">0x10949d3</span>	f30f11442440		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x40</span>(<span class="hljs-built_in">SP</span>)	// 赋值 寄存器 X0 给 w</code></pre>
+<p>可以看到，每个成员变量的偏移量在编译时即可获知，不管其有多么复杂的继承，都是一样的。通过对象存取一个data member，其效率和存取一个非成员变量是一样的。</p>
+<h4 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h4><p>前面的例子提过，对象的总大小刚好等于所有的成员变量之和，也就意味着成员函数并不占用对象的内存大小。那成员函数的调用是怎么实现的呢？我们通过一段代码看下</p>
+<pre><code class="hljs go"><span class="hljs-keyword">type</span> point3d <span class="hljs-keyword">struct</span> &#123;
 	X, Y, Z <span class="hljs-keyword">float32</span>
 &#125;
 
@@ -301,8 +340,10 @@ Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
 	p := point3d&#123;X: <span class="hljs-number">1</span>, Y: <span class="hljs-number">2</span>, Z: <span class="hljs-number">3</span>&#125; <span class="hljs-comment">// L14</span>
 	p.Println()                   <span class="hljs-comment">// L15</span>
-&#125;</code></pre></p>
-<p>同样使用 go tool获取对应的汇编代码<br><pre><code class="hljs x86asm"><span class="hljs-symbol">call.go:</span><span class="hljs-number">14</span>	<span class="hljs-number">0x1094a7d</span>	0f57c0			<span class="hljs-keyword">XORPS</span> X0, X0	
+&#125;</code></pre>
+
+<p>同样使用 go tool获取对应的汇编代码</p>
+<pre><code class="hljs x86asm"><span class="hljs-symbol">call.go:</span><span class="hljs-number">14</span>	<span class="hljs-number">0x1094a7d</span>	0f57c0			<span class="hljs-keyword">XORPS</span> X0, X0	
 <span class="hljs-symbol">call.go:</span><span class="hljs-number">14</span>	<span class="hljs-number">0x1094a80</span>	f30f1144240c		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0xc</span>(<span class="hljs-built_in">SP</span>)
 <span class="hljs-symbol">call.go:</span><span class="hljs-number">14</span>	<span class="hljs-number">0x1094a86</span>	f30f11442410		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x10</span>(<span class="hljs-built_in">SP</span>)
 <span class="hljs-symbol">call.go:</span><span class="hljs-number">14</span>	<span class="hljs-number">0x1094a8c</span>	f30f11442414		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x14</span>(<span class="hljs-built_in">SP</span>)
@@ -314,11 +355,13 @@ Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小
 <span class="hljs-symbol">call.go:</span><span class="hljs-number">14</span>	<span class="hljs-number">0x1094ab6</span>	f30f11442414		<span class="hljs-keyword">MOVSS</span> X0, <span class="hljs-number">0x14</span>(<span class="hljs-built_in">SP</span>)
 <span class="hljs-symbol">call.go:</span><span class="hljs-number">15</span>	<span class="hljs-number">0x1094abc</span>	488d44240c		LEAQ <span class="hljs-number">0xc</span>(<span class="hljs-built_in">SP</span>), <span class="hljs-built_in">AX</span> //将对象 q 的起始地址保存到寄存器<span class="hljs-built_in">AX</span>
 <span class="hljs-symbol">call.go:</span><span class="hljs-number">15</span>	<span class="hljs-number">0x1094ac1</span>	<span class="hljs-number">48890424</span>		<span class="hljs-keyword">MOVQ</span> <span class="hljs-built_in">AX</span>, <span class="hljs-number">0</span>(<span class="hljs-built_in">SP</span>)	  //将对象 q 的起始地址 压栈
-<span class="hljs-symbol">call.go:</span><span class="hljs-number">15</span>	<span class="hljs-number">0x1094ac5</span>	e8d6fdffff		<span class="hljs-keyword">CALL</span> main.(*point3d).Println(SB)	  // 调用 struct point 的 Println() 函数</code></pre><br>可以看到成员函数的调用都是先把参数压栈，然后调用对应的的函数。可见，成员函数与普通的函数调用并无不同。那么函数的内存在哪里呢？</p>
+<span class="hljs-symbol">call.go:</span><span class="hljs-number">15</span>	<span class="hljs-number">0x1094ac5</span>	e8d6fdffff		<span class="hljs-keyword">CALL</span> main.(*point3d).Println(SB)	  // 调用 struct point 的 Println() 函数</code></pre>
+<p>可以看到成员函数的调用都是先把参数压栈，然后调用对应的的函数。可见，成员函数与普通的函数调用并无不同。那么函数的内存在哪里呢？</p>
 <p>还记得进程的内存分布么？</p>
 <p><img src="/images/go-object-model/process-memory.png" alt="process-memory.png"></p>
 <p>没错，所有的函数都在进程的代码段（Text Segment）</p>
-<h3 id="Interface-语意学"><a href="#Interface-语意学" class="headerlink" title="Interface 语意学"></a>Interface 语意学</h3><p>第一部分讲了，封装和继承的影响，剩下这部分会讲清楚 Go 如何使用 interface 实现<code>多态</code>和<code>反射</code>。其中interface又有两种形式，一种是有函数的非空interface，一种是空的interface（interface{}）。话不多说，直接上代码，看下这两种类型的interface的变量在内存大小上有何区别：<br><pre><code class="hljs go"><span class="hljs-keyword">type</span> Point <span class="hljs-keyword">interface</span> &#123;
+<h3 id="Interface-语意学"><a href="#Interface-语意学" class="headerlink" title="Interface 语意学"></a>Interface 语意学</h3><p>第一部分讲了，封装和继承的影响，剩下这部分会讲清楚 Go 如何使用 interface 实现<code>多态</code>和<code>反射</code>。其中interface又有两种形式，一种是有函数的非空interface，一种是空的interface（interface{}）。话不多说，直接上代码，看下这两种类型的interface的变量在内存大小上有何区别：</p>
+<pre><code class="hljs go"><span class="hljs-keyword">type</span> Point <span class="hljs-keyword">interface</span> &#123;
 	Println()
 &#125;
 
@@ -348,12 +391,15 @@ Z at offset 8, size=4</code></pre><br>可以看到，X、Y、Z三个字段大小
 
 	p = &amp;point3d&#123;point2d: point2d&#123;point: point&#123;X: <span class="hljs-number">1</span>&#125;, Y: <span class="hljs-number">2</span>&#125;, Z: <span class="hljs-number">3</span>&#125;
 	fmt.Printf(<span class="hljs-string">"point3d size:%v\n\n"</span>, unsafe.Sizeof(p))
-&#125;</code></pre></p>
-<p>执行程序输出为：<br><pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestPolymorphism
+&#125;</code></pre>
+
+<p>执行程序输出为：</p>
+<pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestPolymorphism
 === RUN   TestPolymorphism
 p size:16, nilP size:16
 p size:16, nilP size:16
-p size:16, nilP size:16</code></pre></p>
+p size:16, nilP size:16</code></pre>
+
 <p>可以看到两种类型的interface 变量大小并无不同，均为16字节。可以明确一点：interface 变量中存储的并非对象的指针，而是特殊的定义类型的变量。那么 interface 是怎么支持<code>多态</code>和<code>反射</code>的呢？</p>
 <p>通过 <code>reflect</code> 包，我们找到了答案。原来，针对以上两种类型的interface， Go 语言底层定义了两个结构分别为 iface 和 eface。两者实现是类似的，以下我们仅针对非空interface进行分析</p>
 <h4 id="interface-底层"><a href="#interface-底层" class="headerlink" title="interface 底层"></a>interface 底层</h4><pre><code class="hljs go"><span class="hljs-keyword">type</span> iface <span class="hljs-keyword">struct</span> &#123;
@@ -382,7 +428,8 @@ p size:16, nilP size:16</code></pre></p>
 <li>iface 的变量可以在<code>编译</code>阶段，在变量赋值处，增加拷贝指向对象（父类或者子类）的类型信息的指令，就可以在运行期完成多态的支持了</li>
 </ol>
 <p><img src="/images/go-object-model/interface.png" alt="interface.png"></p>
-<h4 id="理论验证"><a href="#理论验证" class="headerlink" title="理论验证"></a>理论验证</h4><p>下面我们还是通过测试代码来验证我们的理论，我们自己定义底层的相关类型，然后通过强制类型转换，来尝试解析interface变量中的数据：<br><pre><code class="hljs go"><span class="hljs-keyword">type</span> Iface <span class="hljs-keyword">struct</span> &#123;
+<h4 id="理论验证"><a href="#理论验证" class="headerlink" title="理论验证"></a>理论验证</h4><p>下面我们还是通过测试代码来验证我们的理论，我们自己定义底层的相关类型，然后通过强制类型转换，来尝试解析interface变量中的数据：</p>
+<pre><code class="hljs go"><span class="hljs-keyword">type</span> Iface <span class="hljs-keyword">struct</span> &#123;
 	Tab *Itab
 	Data unsafe.Pointer
 &#125;
@@ -421,8 +468,10 @@ p size:16, nilP size:16</code></pre></p>
 	spew.Dump(iface.Data)
 	fmt.Printf(<span class="hljs-string">"Iface offset: iface.tab = %v, iface.data = %v\n\n"</span>,
 		unsafe.Offsetof(iface.Tab), unsafe.Offsetof(iface.Data))
-&#125;</code></pre></p>
-<p>执行程序输出为：<br><pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestInterface
+&#125;</code></pre>
+
+<p>执行程序输出为：</p>
+<pre><code class="hljs sh">$ go <span class="hljs-built_in">test</span> -v -run TestInterface
 === RUN   TestInterface
 eface size:16
 (uintptr) 0x111f2c0
@@ -442,8 +491,10 @@ point size:16
  &#125;
 &#125;)
 (unsafe.Pointer) 0xc00008e250
-Iface offset: iface.tab = 0, iface.data = 8</code></pre></p>
-<p>下面我们再通过汇编代码看下，赋值操作做了什么？<br><pre><code class="hljs go"><span class="hljs-keyword">type</span> Point <span class="hljs-keyword">interface</span> &#123;
+Iface offset: iface.tab = 0, iface.data = 8</code></pre>
+
+<p>下面我们再通过汇编代码看下，赋值操作做了什么？</p>
+<pre><code class="hljs go"><span class="hljs-keyword">type</span> Point <span class="hljs-keyword">interface</span> &#123;
 	Println()
 &#125;
 
@@ -464,8 +515,10 @@ Iface offset: iface.tab = 0, iface.data = 8</code></pre></p>
 	nilP = &amp;point         <span class="hljs-comment">// L23</span>
 	p = &amp;point            <span class="hljs-comment">// L24</span>
 	fmt.Println(nilP, p) 
-&#125;</code></pre></p>
-<p>通过 go tool 查看汇编代码如下：<br><pre><code class="hljs x86asm">TEXT main<span class="hljs-number">.</span>main(SB) /Users/cyningsun/Documents/go/src/github<span class="hljs-number">.</span>com/cyningsun/go-<span class="hljs-keyword">test</span>/<span class="hljs-number">20200102</span>-inside-golang-object-model/main/build<span class="hljs-number">.</span>go
+&#125;</code></pre>
+
+<p>通过 go tool 查看汇编代码如下：</p>
+<pre><code class="hljs x86asm">TEXT main<span class="hljs-number">.</span>main(SB) /Users/cyningsun/Documents/go/src/github<span class="hljs-number">.</span>com/cyningsun/go-<span class="hljs-keyword">test</span>/<span class="hljs-number">20200102</span>-inside-golang-object-model/main/build<span class="hljs-number">.</span>go
 <span class="hljs-symbol">  build.go:</span><span class="hljs-number">17</span>	<span class="hljs-number">0x1094de0</span>	65488b0c2530000000      <span class="hljs-keyword">MOVQ</span> <span class="hljs-built_in">GS</span>:<span class="hljs-number">0x30</span>, <span class="hljs-built_in">CX</span>
 <span class="hljs-symbol">  build.go:</span><span class="hljs-number">17</span>	<span class="hljs-number">0x1094de9</span>	488d4424b0              LEAQ -<span class="hljs-number">0x50</span>(<span class="hljs-built_in">SP</span>), <span class="hljs-built_in">AX</span>
 <span class="hljs-symbol">  build.go:</span><span class="hljs-number">17</span>	<span class="hljs-number">0x1094dee</span>	483b4110                CMPQ <span class="hljs-number">0x10</span>(<span class="hljs-built_in">CX</span>), <span class="hljs-built_in">AX</span>
@@ -508,7 +561,8 @@ Iface offset: iface.tab = 0, iface.data = 8</code></pre></p>
 <span class="hljs-symbol">  build.go:</span><span class="hljs-number">24</span>	<span class="hljs-number">0x1094ebc</span>	<span class="hljs-number">4889442468</span>              <span class="hljs-keyword">MOVQ</span> <span class="hljs-built_in">AX</span>, <span class="hljs-number">0x68</span>(<span class="hljs-built_in">SP</span>)	// ；将 point 对象地址（<span class="hljs-number">8</span>字节） 保存到 <span class="hljs-number">0x78</span>（即iface<span class="hljs-number">.</span>data）	
 <span class="hljs-symbol">  build.go:</span><span class="hljs-number">25</span>	<span class="hljs-number">0x1094ec1</span>	488b442468              <span class="hljs-keyword">MOVQ</span> <span class="hljs-number">0x68</span>(<span class="hljs-built_in">SP</span>), <span class="hljs-built_in">AX</span>	// fmt<span class="hljs-number">.</span>Println(nilP, p)	
 
-  ...</code></pre></p>
+  ...</code></pre>
+
 <p>事实正如理论一般，在<code>编译</code>阶段，赋值命令被转化为类型信息和对象指针的拷贝，保存下来执行期转换所需要的一切信息。</p>
 <h3 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h3><p>从底层代码和汇编出发，分析 struct 和 interface 的 对象模型，理清了Go 语言高级特性的底层机制。再去学习反射等表层细节，事半功倍。</p>
 <p>参考链接：</p>
@@ -530,6 +584,25 @@ Iface offset: iface.tab = 0, iface.data = 8</code></pre></p>
 </div>
 
 
+    
+
+
+
+  <ol class="related">
+      
+            <li><span><a href="/12-09-2019/concurrency-is-not-parallelism.html">译 | Concurrency is not Parallelism</a></span></li>
+          
+            <li><span><a href="/09-29-2019/share-memory-by-communicating-cn.html">译 | Share Memory By Communicating</a></span></li>
+          
+            <li><span><a href="/09-27-2019/lets-talk-about-logging-cn.html">译｜Let’s talk about logging</a></span></li>
+          
+            <li><span><a href="/09-09-2019/dont-just-check-errors-handle-them-gracefully-cn.html">译｜Don’t just check errors, handle them gracefully</a></span></li>
+          
+            <li><span><a href="/09-07-2019/package-management.html">一张图看懂Go包管理历史</a></span></li>
+          
+  </ol>
+
+
     <ul class="pager">
      
      <li class="next"><a href="/01-22-2020/use-prometheus-for-anomaly-detection.html">Newer &rarr;</a></li>
@@ -538,7 +611,10 @@ Iface offset: iface.tab = 0, iface.data = 8</code></pre></p>
     <li class="previous"><a href="/12-09-2019/concurrency-is-not-parallelism.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

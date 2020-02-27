@@ -37,7 +37,7 @@ Logger用于对日志记录行为的抽象，提供记录不同级别日志的�
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -75,6 +75,25 @@ Logger用于对日志记录行为的抽象，提供记录不同级别日志的�
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -119,9 +138,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -147,12 +167,12 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>深入理解Log4j工作原理</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
         
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Log4j简介"><span class="toc-text">Log4j简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger层次与继承"><span class="toc-text">Logger层次与继承</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Logger层次的继承有什么用处？"><span class="toc-text">Logger层次的继承有什么用处？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何使用记录器层次的继承？"><span class="toc-text">如何使用记录器层次的继承？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Appender层次与继承"><span class="toc-text">Appender层次与继承</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考："><span class="toc-text">参考：</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Log4j简介"><span class="toc-text">Log4j简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger层次与继承"><span class="toc-text">Logger层次与继承</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Logger层次的继承有什么用处？"><span class="toc-text">Logger层次的继承有什么用处？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何使用记录器层次的继承？"><span class="toc-text">如何使用记录器层次的继承？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Appender层次与继承"><span class="toc-text">Appender层次与继承</span></a></li></ol>
  
         <h3 id="Log4j简介"><a href="#Log4j简介" class="headerlink" title="Log4j简介"></a>Log4j简介</h3><p>Log4J最核心的也就5个类：</p>
 <blockquote>
@@ -168,6 +188,7 @@ gtag('config', 'UA-156665333-1');
 Logger logA = Logger.getLogger(<span class="hljs-string">"AClass"</span>);           
 Logger logB = Logger.getLogger(<span class="hljs-string">"AClass.BClass"</span>);           
 Logger logC = Logger.getLogger(<span class="hljs-string">"AClass.BClass.CClass"</span>);</code></pre>
+
 <p>那么rootLog是logA的父Logger，logA是logB的父Logger，logC是logB的Logger。Logger象Java中的类继承一样，子记录器可以继承父Logger的设置信息，也可以覆写相应的信息。</p>
 <h4 id="Logger层次的继承有什么用处？"><a href="#Logger层次的继承有什么用处？" class="headerlink" title="Logger层次的继承有什么用处？"></a>Logger层次的继承有什么用处？</h4><p>假设程序中的每个包都会输出一些公共的日志信息，而每个包的不同子包又有一些特殊的日志信息要输出，这种情况就可以象处理Java中的类一样，运用Logger中的层次关系来达到目的。假设有个名为A的包，有名为A,B的两个子包。现在需要将A包下的所有类都要把日志信息输出到控制台中；A.B包除了输出到控制台外还要输出到文件中；A.C包除了输出到控制台中还要输出到HTML文档中。</p>
 <h4 id="如何使用记录器层次的继承？"><a href="#如何使用记录器层次的继承？" class="headerlink" title="如何使用记录器层次的继承？"></a>如何使用记录器层次的继承？</h4><p>通过Logger.getLogger(XXX.Class.getName())来取得Logger对象。现在我们假设A.B的包下有一个类CClass，那么当调用Logger.getLogger(CClass.class.getName())时，最理想的情况是返回名为A.B.CClass的Logger对象。但是如果不存在名为A.B.CClass的Logger时它会怎样呢？其实通过Logger类的getLogger方法取得记录器时存在下面两种情况：</p>
@@ -175,7 +196,7 @@ Logger logC = Logger.getLogger(<span class="hljs-string">"AClass.BClass.CClass"<
 <p>1.如果存在与所要找的名字完全相同的Logger，则返回相应的Logger对象。<br>2.但如果找不到，它会尝试返回记录器层次中与所要找的Logger最接近的祖先Logger对象。</p>
 </blockquote>
 <h3 id="Appender层次与继承"><a href="#Appender层次与继承" class="headerlink" title="Appender层次与继承"></a>Appender层次与继承</h3><p>同Logger的层次继承类似，Appender也有类似的继承关系。继承层次底层的Logger可以使用其祖先的Appender。不用每个Logger都设置Appender，底层Logger没有设置Appender的情况下，可以一次性从祖先Logger中直接将更换Logger的Appender。实现方法：从自己开始向祖先方法访问各Logger的Appenders。如果继承属性（additive）为false，则在调用了自己所有的Appender后，就直接跳出循环。 </p>
-<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><p><a href="http://logging.apache.org/log4j/1.2/manual.html" target="_blank" rel="noopener">http://logging.apache.org/log4j/1.2/manual.html</a><br><a href="http://blog.csdn.net/shrekmu/article/details/271777" target="_blank" rel="noopener">http://blog.csdn.net/shrekmu/article/details/271777</a>             </p>
+<p>###参考：<br><a href="http://logging.apache.org/log4j/1.2/manual.html" target="_blank" rel="noopener">http://logging.apache.org/log4j/1.2/manual.html</a><br><a href="http://blog.csdn.net/shrekmu/article/details/271777" target="_blank" rel="noopener">http://blog.csdn.net/shrekmu/article/details/271777</a>             </p>
 <p>(完)</p>
 
     </div>
@@ -183,6 +204,10 @@ Logger logC = Logger.getLogger(<span class="hljs-string">"AClass.BClass.CClass"<
 <div class="post-subject">
     
 </div>
+
+
+    
+
 
 
     <ul class="pager">
@@ -193,7 +218,10 @@ Logger logC = Logger.getLogger(<span class="hljs-string">"AClass.BClass.CClass"<
     <li class="previous"><a href="/05-01-2014/mysql-charset.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

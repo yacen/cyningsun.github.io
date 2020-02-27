@@ -29,7 +29,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -67,6 +67,25 @@
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -111,9 +130,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -311,6 +331,14 @@ gtag('config', 'UA-156665333-1');
 
         
     
+       
+
+        
+    
+       
+
+        
+    
     <BR/>
     <BR/>
  
@@ -364,6 +392,14 @@ gtag('config', 'UA-156665333-1');
                       
             
           </ul>
+        
+    
+       
+
+        
+    
+       
+
         
     
        
@@ -560,6 +596,119 @@ gtag('config', 'UA-156665333-1');
             
                       
                         <li><span><a href="/04-09-2011/stl-introsort.html">SGI-STL源码剖析之IntroSort</a> <time class="pull-right post-list">2011/4/9</h4></time></span></span></li>
+                      
+            
+          </ul>
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+    <BR/>
+    <BR/>
+ 
+    <h1 id="缓存">缓存 主题</h1>
+     
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+    
+       
+
+        
+          <BR/>
+          <h3>命中率</h3>
+          <ul>
+            
+                      
+                        <li><span><a href="/02-27-2020/high-concurrency-cache-miss.html">高并发系统设计(2)——缓存命中率</a> <time class="pull-right post-list">2020/2/27</h4></time></span></span></li>
+                      
+            
+          </ul>
+        
+    
+       
+
+        
+          <BR/>
+          <h3>总述</h3>
+          <ul>
+            
+                      
+                        <li><span><a href="/02-02-2020/high-concurrency-hierarchical-storage.html">高并发系统设计(1)——分级存储</a> <time class="pull-right post-list">2020/2/2</h4></time></span></span></li>
                       
             
           </ul>

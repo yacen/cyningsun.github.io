@@ -31,7 +31,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -69,6 +69,25 @@
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -113,9 +132,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -141,7 +161,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>译 | Concurrency is not Parallelism</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -217,6 +237,25 @@ gtag('config', 'UA-156665333-1');
 </div>
 
 
+    
+
+
+
+  <ol class="related">
+      
+            <li><span><a href="/01-12-2020/inside-the-go-object-model.html">深度探索 Go 对象模型</a></span></li>
+          
+            <li><span><a href="/09-29-2019/share-memory-by-communicating-cn.html">译 | Share Memory By Communicating</a></span></li>
+          
+            <li><span><a href="/09-27-2019/lets-talk-about-logging-cn.html">译｜Let’s talk about logging</a></span></li>
+          
+            <li><span><a href="/09-09-2019/dont-just-check-errors-handle-them-gracefully-cn.html">译｜Don’t just check errors, handle them gracefully</a></span></li>
+          
+            <li><span><a href="/09-07-2019/package-management.html">一张图看懂Go包管理历史</a></span></li>
+          
+  </ol>
+
+
     <ul class="pager">
      
      <li class="next"><a href="/01-12-2020/inside-the-go-object-model.html">Newer &rarr;</a></li>
@@ -225,7 +264,10 @@ gtag('config', 'UA-156665333-1');
     <li class="previous"><a href="/09-29-2019/share-memory-by-communicating-cn.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

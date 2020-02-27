@@ -16,10 +16,10 @@
 
 内容提供方按照调用快慢依次：
 
+
 NoSQL数据库：耗时5ms以下
 BG内部服务：耗时10~20ms左右
 外BG服务：耗时50ms+
-
 
 由于内容经常会出现下线，而下线的内容一">
 
@@ -40,7 +40,7 @@ BG内部服务：耗时10~20ms左右
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -78,6 +78,25 @@ BG内部服务：耗时10~20ms左右
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -122,9 +141,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -150,7 +170,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>内容服务锁优化实践</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -160,12 +180,12 @@ gtag('config', 'UA-156665333-1');
         <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>随着内部重点服务接入的内容越来越多，维护各种内容的动态信息(例如：播放量，删除状态等)的成本越来越高。独立出一个内容服务成为很自然的选择。</p>
 <blockquote>
 <p>内容提供方按照调用快慢依次：</p>
+</blockquote>
 <ul>
 <li>NoSQL数据库：耗时5ms以下</li>
 <li>BG内部服务：耗时10~20ms左右</li>
 <li>外BG服务：耗时50ms+</li>
 </ul>
-</blockquote>
 <p>由于内容经常会出现下线，而下线的内容一般在推荐结果中的位于头部，较大可能逃脱推荐服务的若干次截断，如果只在最终返回给用户的时候再进行过滤，就会出现部分类目的内容空白或者缺失。考虑到后端接口的性能，内容服务使用了二次过滤的方式来保证，因此服务提供了两个接口：</p>
 <blockquote>
 <p>前置接口：粗粒度的状态过滤<br>后置接口：内容获取与状态再过滤</p>
@@ -210,6 +230,10 @@ gtag('config', 'UA-156665333-1');
 </div>
 
 
+    
+
+
+
     <ul class="pager">
      
      <li class="next"><a href="/06-08-2018/multi-level-hash.html">Newer &rarr;</a></li>
@@ -218,7 +242,10 @@ gtag('config', 'UA-156665333-1');
     <li class="previous"><a href="/04-24-2018/lock.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

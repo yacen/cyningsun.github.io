@@ -33,7 +33,7 @@ ID生成器除了是数据的唯一标识以外，一般需要在系统中承担
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -71,6 +71,25 @@ ID生成器除了是数据的唯一标识以外，一般需要在系统中承担
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -115,9 +134,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -143,7 +163,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>如何选择合适的ID生成方案？</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -162,14 +182,18 @@ gtag('config', 'UA-156665333-1');
 <p>Weibo</p>
 <p>微博 30bit的秒级时间，4bit来区分IDC，2bit 区分业务，15bit 给 Sequence。理论上限3.2w/s的速度。由于当前发号服务是机房中心式的，1bit 来区分热备。最终，没有用满64bit。</p>
 <p>Flicker</p>
-<p>Flicker 在解决全局ID生成方案里就采用了MySQL自增长ID的机制（auto_increment + replace into + MyISAM）。<br>在我们的应用端需要做下面这两个操作，在一个事务会话里提交：<br><pre><code class="hljs sql"><span class="hljs-keyword">REPLACE</span> <span class="hljs-keyword">INTO</span> Tickets64 (stub) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'a'</span>);
-<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LAST_INSERT_ID</span>();</code></pre><br>Flicker启用了两台数据库服务器生成ID来容灾，通过区分auto_increment的起始值和步长来生成奇偶数的ID。<br><pre><code class="hljs pgsql">TicketServer1:
+<p>Flicker 在解决全局ID生成方案里就采用了MySQL自增长ID的机制（auto_increment + replace into + MyISAM）。<br>在我们的应用端需要做下面这两个操作，在一个事务会话里提交：</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">REPLACE</span> <span class="hljs-keyword">INTO</span> Tickets64 (stub) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'a'</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LAST_INSERT_ID</span>();</code></pre>
+<p>Flicker启用了两台数据库服务器生成ID来容灾，通过区分auto_increment的起始值和步长来生成奇偶数的ID。</p>
+<pre><code class="hljs pgsql">TicketServer1:
 auto-<span class="hljs-keyword">increment</span>-<span class="hljs-keyword">increment</span> = <span class="hljs-number">2</span>
 auto-<span class="hljs-keyword">increment</span>-offset = <span class="hljs-number">1</span>
 
 TicketServer2:
 auto-<span class="hljs-keyword">increment</span>-<span class="hljs-keyword">increment</span> = <span class="hljs-number">2</span>
-auto-<span class="hljs-keyword">increment</span>-offset = <span class="hljs-number">2</span></code></pre></p>
+auto-<span class="hljs-keyword">increment</span>-offset = <span class="hljs-number">2</span></code></pre>
+
 <p>微信</p>
 <p>微信使用Mysql持久化未分配的最大ID，每次从DB取一段放到内存分配给调用方。微信的ID生成是严格递增的，意味着同一时间只能有一台机器提供服务，因此使用仲裁服务+租约机制+路由表，进行容灾。</p>
 <p><img src="/images/weixin-id-generator.jpg" alt="学习层次"></p>
@@ -187,6 +211,10 @@ auto-<span class="hljs-keyword">increment</span>-offset = <span class="hljs-numb
 </div>
 
 
+    
+
+
+
     <ul class="pager">
      
      <li class="next"><a href="/12-29-2018/rand.html">Newer &rarr;</a></li>
@@ -195,7 +223,10 @@ auto-<span class="hljs-keyword">increment</span>-offset = <span class="hljs-numb
     <li class="previous"><a href="/07-07-2018/memory-allocator-contrasts.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">

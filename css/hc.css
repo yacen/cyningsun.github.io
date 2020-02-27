@@ -478,6 +478,13 @@ time {
   background-color: #999;
   border-radius: 10px;
 }
+#comment,
+#related-posts {
+  padding: 1% 10%;
+  margin: 10px 0;
+  position: relative;
+  background: #fff;
+}
 /*------------------------------------*/
 #sidebar-wrapper {
   margin-left: -250px;

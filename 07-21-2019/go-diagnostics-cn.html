@@ -34,7 +34,7 @@ Profiling：Profiling 工具分析Go程序的复杂性和成本，例如其内�
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:10% 10%; position:relative;   background:#fff;}
+    #article{ padding:1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -72,6 +72,25 @@ Profiling：Profiling 工具分析Go程序的复杂性和成本，例如其内�
     ol.toc ol {
       list-style: circle;
       padding: 0px 0px 0px 0px;
+    }
+
+    ol.related::before {
+      content: '相关文章';
+      font-size: 1.3em;
+      border-left: 5px solid #999;
+      padding: 2px 5px 2px 15px;
+    }
+    ol.related {
+        background: #fff;
+        overflow: hidden;
+        color: #999;
+        margin-top: 40px;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    ol.related li {
+      padding: 2px 5px 2px 20px;
     }
 </style>
 
@@ -116,9 +135,10 @@ gtag('config', 'UA-156665333-1');
         </div>
         <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        <li><a href="https://www.cyningsun.com/list.html">List</a></li>
-        <li><a href="https://www.cyningsun.com/links.html">Links</a></li>
-        <li><a href="https://www.cyningsun.com/about.html">About</a></li>
+          <li><a href="/archives">Archives</a></li>
+          <li><a href="/subjects">Subjects</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -144,7 +164,7 @@ gtag('config', 'UA-156665333-1');
   </ul>
 </div>
       <div class="container">
-        <div id="article"  class="typo typo-selection">
+        <div id="article"  class="typo">
     <h1>译 | Diagnostics</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
@@ -215,6 +235,7 @@ gtag('config', 'UA-156665333-1');
 	mux.HandleFunc(<span class="hljs-string">"/custom_debug_path/profile"</span>, pprof.Profile)
 	log.Fatal(http.ListenAndServe(<span class="hljs-string">":7777"</span>, mux))
 &#125;</code></pre>
+
 <h3 id="Tracing"><a href="#Tracing" class="headerlink" title="Tracing"></a>Tracing</h3><p>Tracing 是一种检测代码的方法，用于分析一系列调用的生命周期中的延迟。 Go提供 <a href="https://godoc.org/golang.org/x/net/trace" target="_blank" rel="noopener">golang.org/x/net/trace</a> 包作为每个Go节点的最小 tracing backend，并提供一个带有简单仪表板的最小检测库。 Go还提供了一个执行跟踪器来跟踪时间间隔内的 runtime events。</p>
 <p>Tracing 使我们能够：</p>
 <ul>
@@ -246,8 +267,10 @@ gtag('config', 'UA-156665333-1');
 <p><strong>调试器与 Go 程序的兼容性如何？</strong></p>
 <p><code>gc</code> 编译器执行优化，例如函数内联和变量注册。 这些优化有时会使调试器调试更困难。 目前正在努力提高优化后的二进制文件的DWARF 信息的质量。 在这些改进可用之前，我们建议在构建正在调试的代码时禁用优化。 以下命令构建一个没有编译器优化的包：</p>
 <pre><code class="hljs sh">$ go build -gcflags=all=<span class="hljs-string">"-N -l"</span></code></pre>
+
 <p>作为改进工作的一部分，Go 1.10引入了一个新的编译器flag  <code>-dwarflocationlists</code>。 该标志使编译器添加位置列表，以帮助调试器使用优化后的二进制文件。 以下命令构建使用优化但包含 DWARF 位置列表的包：</p>
 <pre><code class="hljs sh">$ go build -gcflags=<span class="hljs-string">"-dwarflocationlists=true"</span></code></pre>
+
 <p><strong>推荐的用户界面调试器是什么？</strong></p>
 <p>尽管 delve 和 gdb 都提供了 CLI，但大多数集成编辑器和IDE都提供了特定于调试的用户界面。</p>
 <p><strong>是否可以使用Go程序进行事后调试？</strong></p>
@@ -296,6 +319,25 @@ gtag('config', 'UA-156665333-1');
 </div>
 
 
+    
+
+
+
+  <ol class="related">
+      
+            <li><span><a href="/01-12-2020/inside-the-go-object-model.html">深度探索 Go 对象模型</a></span></li>
+          
+            <li><span><a href="/12-09-2019/concurrency-is-not-parallelism.html">译 | Concurrency is not Parallelism</a></span></li>
+          
+            <li><span><a href="/09-29-2019/share-memory-by-communicating-cn.html">译 | Share Memory By Communicating</a></span></li>
+          
+            <li><span><a href="/09-27-2019/lets-talk-about-logging-cn.html">译｜Let’s talk about logging</a></span></li>
+          
+            <li><span><a href="/09-09-2019/dont-just-check-errors-handle-them-gracefully-cn.html">译｜Don’t just check errors, handle them gracefully</a></span></li>
+          
+  </ol>
+
+
     <ul class="pager">
      
      <li class="next"><a href="/07-24-2019/prefer-table-driven-tests-cn.html">Newer &rarr;</a></li>
@@ -304,7 +346,10 @@ gtag('config', 'UA-156665333-1');
     <li class="previous"><a href="/07-20-2019/profiling-go-programs-cn.html">&larr; Older</a></li>
     
 </ul>
-    			<!-- Comment BEGIN -->
+</div>
+
+<div id="comment"  class="typo">
+			<!-- Comment BEGIN -->
       <div id="container"></div>
       
 <link rel="stylesheet" href="/css/gitalk.css">
