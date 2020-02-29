@@ -215,14 +215,14 @@ gtag('config', 'UA-156665333-1');
 </ul>
 <h3 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h3><p>盘点下业界在高并发场景下，使用的存储方案(至少保证数据不丢失)：</p>
 <ol>
-<li>纯内存数据库：以 mongodb 为代表。成本高昂<br>内存数据库 + 磁盘数据库：以 Redis/memcached + 2. Mysql/TiDB 为代表。使用起来比较复杂，需要业务自己处理分级存储带来的问题</li>
+<li>纯内存数据库：以 mongodb 为代表。成本高昂</li>
+<li>内存数据库 + 磁盘数据库：以 Redis/memcached + Mysql/TiDB 为代表。使用起来比较复杂，需要业务自己处理分级存储带来的问题</li>
 <li>高性能高可用分布式数据库：以 megastore（谷歌）/ paxosstore(微信) / Dynamo (亚马逊)，技术门槛比较高，大厂专属</li>
 </ol>
 <p>可以看到绝大部分的互联网公司，还是依靠第二种方案扛住高并发的请求。那么应对高并发的架构中，就不能缺少存储层（也可以称为：持久层，数据访问层），否则业务代码会与存储管理的代码交叉耦合在一起</p>
 <p><img src="/images/high-concurrency-hierarchical-storage/layer-architecture.png" alt="layer-architecture.png"></p>
 <p>使用第二种方案，就免不了缓存的是是非非。既然缓存也是存储层级中的一层，所有的问题也就脱不开分级问题的范畴了，后续详聊。</p>
-<br/>
-
+<p><br/></p>
 <p>参考链接：</p>
 <ul>
 <li><a href="https://stackoverflow.com/questions/868568/what-do-the-terms-cpu-bound-and-i-o-bound-mean" target="_blank" rel="noopener">What do the terms “CPU bound” and “I/O bound” mean?</a></li>
