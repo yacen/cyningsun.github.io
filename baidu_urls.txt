@@ -1,3 +1,4 @@
+https://www.cyningsun.com/03-07-2020/high-concurrency-cache-consistent.html
 https://www.cyningsun.com/02-27-2020/high-concurrency-cache-miss.html
 https://www.cyningsun.com/02-22-2020/hidden-secret-to-understanding-prometheus.html
 https://www.cyningsun.com/02-02-2020/high-concurrency-hierarchical-storage.html
@@ -7,4 +8,3 @@ https://www.cyningsun.com/12-09-2019/concurrency-is-not-parallelism.html
 https://www.cyningsun.com/09-29-2019/share-memory-by-communicating-cn.html
 https://www.cyningsun.com/09-27-2019/lets-talk-about-logging-cn.html
 https://www.cyningsun.com/09-15-2019/micro-service-monitor-prometheus-client.html
-https://www.cyningsun.com/09-13-2019/micro-service-monitor-prometheus-ha.html
