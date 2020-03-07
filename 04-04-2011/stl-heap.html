@@ -32,7 +32,7 @@ heap 的实现假设动用 一 个小技巧 3 ，将 array 的 #0 元素保留�
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:1% 10%; position:relative;   background:#fff;}
+    #article{ padding:10% 10% 1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -194,9 +194,7 @@ gtag('config', 'UA-156665333-1');
 
     *(first + holeIndex) = value; <span class="hljs-comment">// 令洞值为新值，完成安插动作。</span>
 &#125;</code></pre>
-
-<h4 id="pop-heap-算法"><a href="#pop-heap-算法" class="headerlink" title="pop_heap 算法"></a>pop_heap 算法</h4><p>pop 动作取走根节点（其实是移至底部容器 vector 的最后一个元素）之后，为了满足 complete binary tree 的条件，必须割舍最下层最右边的叶节点，并将其值安插至 max_heap （安插时用到 __push_heap ）。（取走根节点后）为满足 max-heap 的条件（每个节点的键值都大于或等于其子节点键值），我们执行一个所谓的 percolate down （下溯）程序：将根节点取走（最大值被取走后，形成一个「 hole 」），然后比较其两个子节点键值（ key ），并与较大子节点对调位置。如此一直下放，直到这个「 hole 」的键值大于左右两个子节点，或直到下放至叶节点为止。</p>
-<pre><code class="hljs c++"><span class="hljs-comment">//first: 底层容器的起始位置 iterator</span>
+<h4 id="pop-heap-算法"><a href="#pop-heap-算法" class="headerlink" title="pop_heap 算法"></a>pop_heap 算法</h4><p>pop 动作取走根节点（其实是移至底部容器 vector 的最后一个元素）之后，为了满足 complete binary tree 的条件，必须割舍最下层最右边的叶节点，并将其值安插至 max_heap （安插时用到 __push_heap ）。（取走根节点后）为满足 max-heap 的条件（每个节点的键值都大于或等于其子节点键值），我们执行一个所谓的 percolate down （下溯）程序：将根节点取走（最大值被取走后，形成一个「 hole 」），然后比较其两个子节点键值（ key ），并与较大子节点对调位置。如此一直下放，直到这个「 hole 」的键值大于左右两个子节点，或直到下放至叶节点为止。<br><pre><code class="hljs c++"><span class="hljs-comment">//first: 底层容器的起始位置 iterator</span>
 <span class="hljs-comment">//holeIndex: 被取走的根植形成 hole 位置的索引</span>
 <span class="hljs-comment">//len: 指定了排序的区域大小</span>
 <span class="hljs-comment">//value: 割舍之叶节点之值</span>
@@ -223,9 +221,8 @@ gtag('config', 'UA-156665333-1');
         holeIndex = secondChild - <span class="hljs-number">1</span>;
     &#125;
     __push_heap (first, holeIndex, topIndex, value);
-&#125;</code></pre>
-<h4 id="sort-heap-算法"><a href="#sort-heap-算法" class="headerlink" title="sort_heap 算法"></a>sort_heap 算法</h4><p>既然每次 pop_heap 可获得 heap 之 中 键值最大的元素，如果持续对整个 heap 做pop_heap 动作，每次将操作范围从后向前缩减 一 个元素（因为 pop_heap 会把键值最大的元素放在底部容器的最尾端），当整个程序执行完毕，我们便有了㆒个递增序列。</p>
-<pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>&gt;
+&#125;</code></pre></p>
+<h4 id="sort-heap-算法"><a href="#sort-heap-算法" class="headerlink" title="sort_heap 算法"></a>sort_heap 算法</h4><p>既然每次 pop_heap 可获得 heap 之 中 键值最大的元素，如果持续对整个 heap 做pop_heap 动作，每次将操作范围从后向前缩减 一 个元素（因为 pop_heap 会把键值最大的元素放在底部容器的最尾端），当整个程序执行完毕，我们便有了㆒个递增序列。<br><pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>&gt;
 <span class="hljs-title">void</span> <span class="hljs-title">sort_heap</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
     <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>) &#123;</span>
     <span class="hljs-comment">// 以 下 ，每执行 一 次 pop_heap() ，极值（在 STL heap 中 为极大值）即被放在尾端。</span>
@@ -233,10 +230,8 @@ gtag('config', 'UA-156665333-1');
     <span class="hljs-comment">// 排序结果。</span>
     <span class="hljs-keyword">while</span> (last - first &gt; <span class="hljs-number">1</span>)
         pop_heap (first, last--); <span class="hljs-comment">// 每执行 pop_heap() 一 次，操作范围即退缩 一 格。</span>
-&#125;</code></pre>
-
-<h4 id="make-heap-算法"><a href="#make-heap-算法" class="headerlink" title="make_heap 算法"></a>make_heap 算法</h4><p>这个算法用来将一段现有的数据转化为一个heap 。其主要依据就是 complete binary tree 的隐式表述（ implicit representation ）。</p>
-<pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>, <span class="hljs-title">class</span> <span class="hljs-title">Distance</span>&gt;
+&#125;</code></pre></p>
+<h4 id="make-heap-算法"><a href="#make-heap-算法" class="headerlink" title="make_heap 算法"></a>make_heap 算法</h4><p>这个算法用来将一段现有的数据转化为一个heap 。其主要依据就是 complete binary tree 的隐式表述（ implicit representation ）。<br><pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RandomAccessIterator</span>, <span class="hljs-title">class</span> <span class="hljs-title">T</span>, <span class="hljs-title">class</span> <span class="hljs-title">Distance</span>&gt;
 <span class="hljs-title">void</span> __<span class="hljs-title">make_heap</span> (<span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">first</span>,
     <span class="hljs-title">RandomAccessIterator</span> <span class="hljs-title">last</span>, <span class="hljs-title">T</span>*,
     <span class="hljs-title">Distance</span>*) &#123;</span>
@@ -259,7 +254,8 @@ gtag('config', 'UA-156665333-1');
         <span class="hljs-comment">// 走完根节点，就结束。</span>
         <span class="hljs-comment">// （即将重排之子树的）头部向前一个节点</span>
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></p>
+
     </div>
     
 <div class="post-subject">

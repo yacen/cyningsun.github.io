@@ -35,7 +35,7 @@ fqName：由Namespace、Subsystem和metric的Name组成。相同fqName的监控�
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:1% 10%; position:relative;   background:#fff;}
+    #article{ padding:10% 10% 1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -177,11 +177,10 @@ gtag('config', 'UA-156665333-1');
 <li>Desc：该结构是图中最关键的结构体，需要详细说明。<blockquote>
 <ul>
 <li>fqName：由Namespace、Subsystem和metric的Name组成。相同fqName的监控指标在整个系统中需要保证唯一(dimhash, label dimensions hash)，包括：type、labels(顺序无关)、help。</li>
-<li>labels：包含该metric的label列表</li>
+<li>labels：包含该metric的label列表<br>-Metric：Desc相同，但label值不同的指标定义为Metric，即LabelPair列表+Desc确定一个Metric，每个Metric都有其type（counter、gauge、summary、histogram）和vaule</li>
 </ul>
 </blockquote>
 </li>
-<li>Metric：Desc相同，但label值不同的指标定义为Metric，即LabelPair列表+Desc确定一个Metric，每个Metric都有其type（counter、gauge、summary、histogram）和vaule</li>
 <li>MetricVec：相同fqName的Metric会存放在同一个MetricVec</li>
 <li>Collector：任何可以被收集监控指标的接口（MetricVec、Metric均实现了该接口）；通常在使用时类似Package，自定义的Collector将多个相关的MetricVec打包，以供收集，例如：goCollector、processCollector。</li>
 <li>Registry：实现了Gatherer(数据收集)和Registerer（指标注册）接口，并提供了以上功能。</li>

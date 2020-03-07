@@ -34,7 +34,7 @@
     :-moz-any(h1, h2, h3, h4, h5, h5) em{ text-transform: capitalize; }
     em:hover{ color:inherit; }
 
-    #article{ padding:1% 10%; position:relative;   background:#fff;}
+    #article{ padding:10% 10% 1% 10%; position:relative;   background:#fff;}
     #tagline{ color:#999; font-size:1em; margin:-2em 0 2em; padding-bottom:2em; border-bottom:3px double #eee; }
     #table{ margin-bottom:2em; color:#888; }
 
@@ -222,8 +222,7 @@ gtag('config', 'UA-156665333-1');
 <p>可以看到绝大部分的互联网公司，还是依靠第二种方案扛住高并发的请求。那么应对高并发的架构中，就不能缺少存储层（也可以称为：持久层，数据访问层），否则业务代码会与存储管理的代码交叉耦合在一起</p>
 <p><img src="/images/high-concurrency-hierarchical-storage/layer-architecture.png" alt="layer-architecture.png"></p>
 <p>使用第二种方案，就免不了缓存的是是非非。既然缓存也是存储层级中的一层，所有的问题也就脱不开分级问题的范畴了，后续详聊。</p>
-<br/>
-
+<p><br/></p>
 <p>参考链接：</p>
 <ul>
 <li><a href="https://stackoverflow.com/questions/868568/what-do-the-terms-cpu-bound-and-i-o-bound-mean" target="_blank" rel="noopener">What do the terms “CPU bound” and “I/O bound” mean?</a></li>
