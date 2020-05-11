@@ -17,7 +17,7 @@
 
 D">
 
-<meta name="keywords" content="architecture,架构,接入层,高可用">
+<meta name="keywords" content="architecture,架构,接入层,高可用,网关">
 
 
 <link rel="stylesheet" href="/css/bootstrap.css">
@@ -218,6 +218,7 @@ gtag('config', 'UA-156665333-1');
 <p>与Nginx和HAProxy比较，LVS作为L4的负载均衡服务尤其突出，一般对性能要求比较高的架构，都会使用它来进行转发。如果有需要在再下游接入Nginx或者HAproxy作为L7的Web请求转发。</p>
 <h3 id="业务服务容灾"><a href="#业务服务容灾" class="headerlink" title="业务服务容灾"></a>业务服务容灾</h3><p>业务层的容灾常常是依靠上游的服务来完成，例如Keepalived的健康检查或者nginx的故障摘除模块，以达到容灾的目的。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>从以上的说明我们就能够清晰的弄清楚接入层做了什么，如何保证平行扩展的能力；如何保证在故障发生的时候，能够保证尽量少的对用户的影响和人工介入，快速恢复。</p>
+<p><strong>本文作者</strong>：cyningsun<br /><strong>本文地址</strong>： <a href="https://www.cyningsun.com/02-03-2019/access-layer-architecture.html">https://www.cyningsun.com/02-03-2019/access-layer-architecture.html</a> <br /><strong>版权声明</strong>：本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/" target="_blank" rel="noopener">CC BY-NC-ND 3.0 CN</a> 许可协议。转载请注明出处！</p>
 
     </div>
     
