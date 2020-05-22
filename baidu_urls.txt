@@ -1,3 +1,4 @@
+https://www.cyningsun.com/05-23-2020/why-version-is-important-when-coaching.html
 https://www.cyningsun.com/05-11-2020/proto-marshal-panic.html
 https://www.cyningsun.com/05-03-2020/mobile-application-access-tech.html
 https://www.cyningsun.com/03-28-2020/site-reliability-engineering.html
@@ -7,4 +8,3 @@ https://www.cyningsun.com/02-22-2020/hidden-secret-to-understanding-prometheus.h
 https://www.cyningsun.com/02-02-2020/high-concurrency-hierarchical-storage.html
 https://www.cyningsun.com/01-22-2020/use-prometheus-for-anomaly-detection.html
 https://www.cyningsun.com/01-12-2020/inside-the-go-object-model.html
-https://www.cyningsun.com/12-09-2019/concurrency-is-not-parallelism.html
