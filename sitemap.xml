@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.cyningsun.com/06-07-2020/unified-error-handling.html</loc>
+    
+    <lastmod>2020-06-07T13:21:17.869Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.cyningsun.com/09-09-2019/dont-just-check-errors-handle-them-gracefully-cn.html</loc>
+    
+    <lastmod>2020-06-07T13:14:58.722Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.cyningsun.com/08-19-2019/errors-are-values-cn.html</loc>
+    
+    <lastmod>2020-06-07T13:14:51.164Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.cyningsun.com/05-23-2020/why-version-is-important-when-coaching.html</loc>
     
     <lastmod>2020-05-22T16:47:03.551Z</lastmod>
@@ -219,13 +240,6 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/09-09-2019/dont-just-check-errors-handle-them-gracefully-cn.html</loc>
-    
-    <lastmod>2020-02-03T06:53:29.642Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.cyningsun.com/09-07-2019/package-management.html</loc>
     
     <lastmod>2020-02-03T06:53:29.642Z</lastmod>
@@ -234,13 +248,6 @@
   
   <url>
     <loc>https://www.cyningsun.com/08-03-2019/solid-go-design-cn.html</loc>
-    
-    <lastmod>2020-02-03T06:53:29.641Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.cyningsun.com/08-19-2019/errors-are-values-cn.html</loc>
     
     <lastmod>2020-02-03T06:53:29.641Z</lastmod>
     
@@ -464,13 +471,6 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/07-04-2014/inside-log4j.html</loc>
-    
-    <lastmod>2020-02-03T06:53:29.622Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.cyningsun.com/05-01-2014/mysql-charset.html</loc>
     
     <lastmod>2020-02-03T06:53:29.622Z</lastmod>
@@ -478,14 +478,21 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/04-22-2014/css-standard-four.html</loc>
+    <loc>https://www.cyningsun.com/07-04-2014/inside-log4j.html</loc>
+    
+    <lastmod>2020-02-03T06:53:29.622Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.cyningsun.com/04-22-2014/css-standard-five.html</loc>
     
     <lastmod>2020-02-03T06:53:29.621Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/04-22-2014/css-standard-five.html</loc>
+    <loc>https://www.cyningsun.com/04-22-2014/css-standard-four.html</loc>
     
     <lastmod>2020-02-03T06:53:29.621Z</lastmod>
     

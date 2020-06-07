@@ -169,13 +169,14 @@ gtag('config', 'UA-156665333-1');
         
     <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述"><span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键点描述"><span class="toc-text">关键点描述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#KMP算法"><span class="toc-text">KMP算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AC自动机"><span class="toc-text">AC自动机</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Ukkonen后缀树算法"><span class="toc-text">Ukkonen后缀树算法</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#代码实现"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考文档"><span class="toc-text">参考文档</span></a></li></ol></li></ol>
  
-        <h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>字符串匹配查找常见的算法或数据结构有：暴力搜索、KMP算法(Extend-KMP、BM算法、Sunday算法)、AC自动机、前缀树(Double Array Trie)、后缀树（后缀数组）。以下汇总它们的算法比较，以及关键点：<br><img src="%3C!--%EF%BF%BC0--%3E/public/blog-img/algorithm/string-match.png" alt="string match"></p>
+        <h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>字符串匹配查找常见的算法或数据结构有：暴力搜索、KMP算法(Extend-KMP、BM算法、Sunday算法)、AC自动机、前缀树(Double Array Trie)、后缀树（后缀数组）。以下汇总它们的算法比较，以及关键点：<br><img src="!--￼0--&gt;/public/blog-img/algorithm/string-match.png" alt="string match"></p>
 <h3 id="关键点描述"><a href="#关键点描述" class="headerlink" title="关键点描述"></a>关键点描述</h3><h4 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h4><p>模式串需要移动的距离＝模式串已匹配的字符长度－（模式串已匹配字符串）前缀后缀最长公长度</p>
 <p>next数组（前缀后缀最长公长度）求解：N为next数组，i为数组位置，P为模式串</p>
 <ul>
 <li>1、当i＝0，N［0］＝0</li>
 <li>2、当i＝1，如果P［1］＝P［0］，N［1］＝N［0］＋1；否则N［1］＝N［0］</li>
-<li>3、当i＝j，如果P［j］＝P［N［j－1］］，N［j］＝N［j－1］＋1；<pre><code>否则，i＝N［j－1］，如果i&gt;0，重复上述计算，否则，N［j］＝0</code></pre></li>
+<li>3、当i＝j，如果P［j］＝P［N［j－1］］，N［j］＝N［j－1］＋1；<pre><code>       否则，i＝N［j－1］，如果i&gt;0，重复上述计算，否则，N［j］＝0
+</code></pre></li>
 </ul>
 <h4 id="AC自动机"><a href="#AC自动机" class="headerlink" title="AC自动机"></a>AC自动机</h4><ul>
 <li>1、为模式串建立Trie（标志模式串的节点特殊标记，用于匹配时确认匹配成功）</li>
