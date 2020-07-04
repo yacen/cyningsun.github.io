@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.cyningsun.com/07-04-2020/how-to-name-varible.html</loc>
+    
+    <lastmod>2020-07-04T05:04:04.271Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.cyningsun.com/06-29-2020/how-to-write-restful-api.html</loc>
     
-    <lastmod>2020-06-29T15:02:34.572Z</lastmod>
+    <lastmod>2020-07-04T04:56:03.913Z</lastmod>
     
   </url>
   
@@ -282,14 +289,14 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/07-06-2019/chinese-kramdown-typeset.html</loc>
+    <loc>https://www.cyningsun.com/07-05-2019/live-stack-traces-in-go-cn.html</loc>
     
     <lastmod>2020-02-03T06:53:29.638Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/07-05-2019/live-stack-traces-in-go-cn.html</loc>
+    <loc>https://www.cyningsun.com/07-06-2019/chinese-kramdown-typeset.html</loc>
     
     <lastmod>2020-02-03T06:53:29.638Z</lastmod>
     
@@ -303,14 +310,14 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/12-29-2018/rand.html</loc>
+    <loc>https://www.cyningsun.com/12-26-2018/id-generator.html</loc>
     
     <lastmod>2020-02-03T06:53:29.635Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/12-26-2018/id-generator.html</loc>
+    <loc>https://www.cyningsun.com/12-29-2018/rand.html</loc>
     
     <lastmod>2020-02-03T06:53:29.635Z</lastmod>
     
@@ -520,13 +527,6 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/04-18-2014/basic-knowledge-about-android-screen.html</loc>
-    
-    <lastmod>2020-02-03T06:53:29.619Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.cyningsun.com/04-18-2014/css-standard-one.html</loc>
     
     <lastmod>2020-02-03T06:53:29.619Z</lastmod>
@@ -534,14 +534,21 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/04-17-2014/Multiplexing-in-Thrift-Enhancing-Thrift-to-Meet-Enterprise-Expectations.html</loc>
+    <loc>https://www.cyningsun.com/04-18-2014/basic-knowledge-about-android-screen.html</loc>
+    
+    <lastmod>2020-02-03T06:53:29.619Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.cyningsun.com/04-13-2014/web-security.html</loc>
     
     <lastmod>2020-02-03T06:53:29.618Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/04-13-2014/web-security.html</loc>
+    <loc>https://www.cyningsun.com/04-17-2014/Multiplexing-in-Thrift-Enhancing-Thrift-to-Meet-Enterprise-Expectations.html</loc>
     
     <lastmod>2020-02-03T06:53:29.618Z</lastmod>
     
@@ -562,14 +569,14 @@
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/05-08-2012/stl-shuffle.html</loc>
+    <loc>https://www.cyningsun.com/02-28-2014/Velocity-Resource-Load.html</loc>
     
     <lastmod>2020-02-03T06:53:29.615Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.cyningsun.com/02-28-2014/Velocity-Resource-Load.html</loc>
+    <loc>https://www.cyningsun.com/05-08-2012/stl-shuffle.html</loc>
     
     <lastmod>2020-02-03T06:53:29.615Z</lastmod>
     
