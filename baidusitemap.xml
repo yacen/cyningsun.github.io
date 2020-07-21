@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.cyningsun.com/07-04-2020/how-to-naming-things.html</loc>
-    <lastmod>2020-07-04</lastmod>
+    <loc>https://www.cyningsun.com/07-22-2020/software-development-methodology.html</loc>
+    <lastmod>2020-07-21</lastmod>
+  </url>  <url>
+    <loc>https://www.cyningsun.com/06-07-2020/unified-error-handling.html</loc>
+    <lastmod>2020-07-21</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/06-29-2020/how-to-write-restful-api.html</loc>
-    <lastmod>2020-07-04</lastmod>
+    <lastmod>2020-07-21</lastmod>
+  </url>  <url>
+    <loc>https://www.cyningsun.com/07-04-2020/how-to-naming-things.html</loc>
+    <lastmod>2020-07-21</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/08-19-2019/errors-are-values-cn.html</loc>
     <lastmod>2020-06-07</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/09-09-2019/dont-just-check-errors-handle-them-gracefully-cn.html</loc>
-    <lastmod>2020-06-07</lastmod>
-  </url>  <url>
-    <loc>https://www.cyningsun.com/06-07-2020/unified-error-handling.html</loc>
     <lastmod>2020-06-07</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/05-23-2020/why-version-is-important-when-coaching.html</loc>
@@ -136,10 +139,10 @@
     <loc>https://www.cyningsun.com/07-07-2018/memory-allocator-contrasts.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/06-08-2018/multi-level-hash.html</loc>
+    <loc>https://www.cyningsun.com/05-04-2018/lock-practice.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/05-04-2018/lock-practice.html</loc>
+    <loc>https://www.cyningsun.com/06-08-2018/multi-level-hash.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-24-2018/lock.html</loc>
@@ -157,13 +160,13 @@
     <loc>https://www.cyningsun.com/04-13-2016/recent-blog.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
+    <loc>https://www.cyningsun.com/03-21-2016/trie.html</loc>
+    <lastmod>2020-02-03</lastmod>
+  </url>  <url>
     <loc>https://www.cyningsun.com/04-04-2016/google-paper.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-04-2016/kmp.html</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>  <url>
-    <loc>https://www.cyningsun.com/03-21-2016/trie.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/03-17-2016/comm-sys.html</loc>
@@ -175,10 +178,10 @@
     <loc>https://www.cyningsun.com/03-09-2016/chat-time.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/06-13-2015/Quickfix.html</loc>
+    <loc>https://www.cyningsun.com/05-31-2015/YouCompleteMe-Install.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/05-31-2015/YouCompleteMe-Install.html</loc>
+    <loc>https://www.cyningsun.com/06-13-2015/Quickfix.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/10-11-2014/syntopical-reading-plan.html</loc>
@@ -187,10 +190,10 @@
     <loc>https://www.cyningsun.com/10-15-2014/reading-mybatis-source-code.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/09-22-2014/business-modeling.html</loc>
+    <loc>https://www.cyningsun.com/09-09-2014/data-persistence.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/09-09-2014/data-persistence.html</loc>
+    <loc>https://www.cyningsun.com/09-22-2014/business-modeling.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/08-17-2014/reading-mybatis-spring-source-code.html</loc>
@@ -241,10 +244,10 @@
     <loc>https://www.cyningsun.com/02-28-2014/Velocity-Resource-Load.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-19-2012/bitwise-operation.html</loc>
+    <loc>https://www.cyningsun.com/05-07-2012/stl-permutation.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/05-07-2012/stl-permutation.html</loc>
+    <loc>https://www.cyningsun.com/04-19-2012/bitwise-operation.html</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-09-2011/stl-introsort.html</loc>
