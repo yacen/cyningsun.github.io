@@ -5,19 +5,21 @@
 <meta name="sogou_site_verification" content="MQ6oTycfG3"/>
 <meta name="google-site-verification" content="hqIFVwBa7rWx4VpI_8SjaGCBNRD664DCU_Sulcvdit8" />
 
-<title>你不了解的软件开发过程</title>
+<title>如何设计 RPC 接口</title>
 <meta property="og:site_name" content="有疑者说">
 <meta property="article:publisher" content="https://www.cyningsun.com" />
 <meta property="article:author" content="https://www.cyningsun.com" />
-<meta property="article:published_time" content="2020-07-22 00:00:00 +0800"/>
-<meta property="og:url" content="/07-22-2020/software-development-methodology.html">
+<meta property="article:published_time" content="2020-07-27 00:00:00 +0800"/>
+<meta property="og:url" content="/07-27-2020/how-to-write-rpc-interface.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta itemprop="description" name="description" content="中国 IT 从业人员中对软件研发过程有系统认识的少之又少，甚至在工作中遇到的科班出身的研发同学同样不例外。相反，大家对于追求热点概念（例如：DDD，领域驱动设计）倒是不遗余力，满怀热情。
-软件开发刚开始的时候，并没有很好的经验或思想来指导项目研发。从研发的各种名词中可以看出来，软件行业从建筑行业借鉴了许多经验。
+<meta itemprop="description" name="description" content="如果说之前清晰知道如何 设计HTTP API  就可以了，那么随着微服务走热，服务越来越多，每个服务都要对外暴漏接口，对如何设计RPC接口有个清晰的认识，变得比以前任何时候都重要。
+虽然设计 RPC 接口很重要，但是却并不容易，经历过多少折腾，才能理解接口那些痛：
 
-建筑">
+莫“名”其妙
 
-<meta name="keywords" content="DDD,领域驱动设计,软件工程,领域模型,软件建模">
+读取数据可能会因为数据不一样，分别称">
+
+<meta name="keywords" content="RPC interface,RPC Design,Programming">
 
 
 <link rel="stylesheet" href="/css/bootstrap.css">
@@ -166,38 +168,85 @@ gtag('config', 'UA-156665333-1');
 </div>
       <div class="container">
         <div id="article"  class="typo">
-    <h1>你不了解的软件开发过程</h1><br/>
+    <h1>如何设计 RPC 接口</h1><br/>
     <h2 id="tagline" class="serif"></h2>
     <div class="post">
         
-    
- 
-        <p>中国 IT 从业人员中对软件研发过程有系统认识的少之又少，甚至在工作中遇到的科班出身的研发同学同样不例外。相反，大家对于追求热点概念（例如：DDD，领域驱动设计）倒是不遗余力，满怀热情。</p>
-<p>软件开发刚开始的时候，并没有很好的经验或思想来指导项目研发。从研发的各种名词中可以看出来，软件行业从建筑行业借鉴了许多经验。</p>
+        <p>如果说之前清晰知道如何 <a href="https://www.cyningsun.com/06-29-2020/how-to-write-restful-api.html">设计HTTP API</a>  就可以了，那么随着微服务走热，服务越来越多，每个服务都要对外暴漏接口，对如何设计RPC接口有个清晰的认识，变得比以前任何时候都重要。</p>
+<p>虽然设计 RPC 接口很重要，但是却并不容易，经历过多少折腾，才能理解接口那些痛：</p>
 <ul>
-<li><p>建筑行业涉及到不同角色协作：设计师、开发商（工人、电工和水暖工）、质量监理、等等。</p>
+<li><p>莫“名”其妙</p>
 <blockquote>
-<p>软件工程类似的角色：产品经理、研发（后端、前端、客户端）、测试、QA</p>
+<p>读取数据可能会因为数据不一样，分别称为：<code>GetXxx</code>  vs <code>GetXxxLite</code> ，所以 lite 不 lite 有啥不一样？类似的太多太多，关于如何取一个好名字，可以看这里：<a href="https://www.cyningsun.com/07-04-2020/how-to-naming-things.html">《如何代码命名》</a></p>
 </blockquote>
 </li>
-<li><p>建筑行业遵循的流程：把端到端的项目分成不同的阶段，每个流程阶段由不同角色负责</p>
+<li><p>接口过多</p>
+<blockquote>
+<p>由于页面需要各式各样的数据，导致查询条件差异很大，很容易出现：</p>
+<ul>
+<li>一个查询条件，一个接口的尴尬</li>
+<li>直接新增接口，但实际上该接口可能已经出现过，只是被隐藏在众多接口里</li>
+</ul>
+</blockquote>
+</li>
+<li><p>难以扩展</p>
+<blockquote>
+<p>面向需求设计接口，不进行任何抽象，导致接口难以扩展</p>
+</blockquote>
 </li>
 </ul>
-<p>每个阶段赋予角色的做法，有利于充分利用成本高昂的人力资源。在借鉴的基础的产生了第一个标准的软件开发流程</p>
-<p><img src="/images/software-development-methodology/Waterfall.jpeg" alt="img"></p>
-<p>事实上，如同力学三大定律为物理学奠基一样，瀑布模型在软件行业的地位同样不可动摇。虽然随着历史的车轮滚滚向前，软件研发方法论的研究重点从瀑布模型的 “流程”，过渡到以交付速度和成功率为目标的敏捷开发、持续集成、持续交付、持续部署。但研发过程的核心步骤从未改变：分析、设计、开发</p>
-<p><img src="/images/software-development-methodology/Evolution-of-Software-Delivery.png" alt="img"></p>
-<p>然而，不幸的是，因为追求交付速度、成功率，国内研发不仅丢掉了瀑布模型，也丢掉了核心过程。太多的研发以敏捷为理论核武，把设计完全抛掉，更遑论分析。如果系统确实太过复杂，抑或领导要求，那就装模作样加入一个设计阶段，设计一个看起来能够跑的通的架构。一旦软件进入实现阶段，所有的设计文档就被雪藏起来吃灰。</p>
-<p>重视开发多于设计，不知分析为何物。架构凭经验和感觉，就像无根之水，即使再美也经不起业务变化和迭代的侵蚀，最终走向腐朽。最后不得不亮出终极武器：重构（其实，是“重做”）。</p>
-<p>意识到需要做分析、设计，到知道如何做分析设计，中间有着不小的鸿沟。软件开发不是玄学，有着系统的方法论，以及完善的表达工具。需求分析从业务开始，层层剥开，直至实现。如果把软件想象成建筑，那么各种图就是从某一个特定的视角（viewpoint）表达软件的设计图纸，因此RUP C4+1 称之为 <code>View model</code> 也大抵表达该含义吧。选择合适的图表述，把软件表述清楚也能体现出工程人员的软件设计能力。</p>
-<p><strong>各个层级的分析对象</strong><br><img src="/images/software-development-methodology/business-analyze.png" alt=""></p>
-<p><strong>各分析阶段用于表达的图</strong><br><img src="/images/software-development-methodology/RUP.jpg" alt=""></p>
-<p>具体使用细节，不再使用例子详细描述，可以参考：</p>
+<p>三者就像追命绳索，一环套一环，环环相扣，最终将服务带入墓地。</p>
+<h3 id="认识复杂性"><a href="#认识复杂性" class="headerlink" title="认识复杂性"></a>认识复杂性</h3><p>举个例子，当从DB表读取表数据时，可以按照以下三种维度读取数据：</p>
+<ol>
+<li><p>DB的维度，允许表之间 join，即操作复合数据</p>
+</li>
+<li><p>表的维度，允许且只允许全部操作一条数据的所有字段</p>
+</li>
+<li><p>字段的维度，允许接口操作表的部分字段。</p>
+</li>
+</ol>
+<p>假设数据库 <code>d</code> 有 <code>t</code>  张表，平均每个表有 <code>f</code> 个字段，每种数据有 <code>n</code> 种操作。则:</p>
 <ul>
-<li>Microsoft: <a href="https://docs.microsoft.com/en-gb/visualstudio/modeling/analyze-and-model-your-architecture?view=vs-2015" target="_blank" rel="noopener">Analyze and model your architecture</a></li>
-<li>IBM:<a href="https://www.ibm.com/developerworks/cn/rational/define-application-architecture-rational-software-architect-1/index.html" target="_blank" rel="noopener">利用Rational Software Architect 定义应用程序架构 第一部分</a>、<a href="https://www.ibm.com/developerworks/cn/rational/define-application-architecture-rational-software-architect-2/index.html" target="_blank" rel="noopener">利用Rational Software Architect 定义应用程序架构 第二部分</a></li>
+<li>第一种方案，有 <code>n * t!</code> 个接口；</li>
+<li>第二种方案，有 <code>n * t</code> 个接口；</li>
+<li>第三种方案，有 <code>n * t * f!</code> 个接口</li>
+<li>没有方案，则有 <code>n * t! * f! * n</code> 个接口</li>
 </ul>
-<p><strong>本文作者</strong>：cyningsun<br /><strong>本文地址</strong>： <a href="https://www.cyningsun.com/07-22-2020/software-development-methodology.html">https://www.cyningsun.com/07-22-2020/software-development-methodology.html</a> <br /><strong>版权声明</strong>：本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/" target="_blank" rel="noopener">CC BY-NC-ND 3.0 CN</a> 许可协议。转载请注明出处！</p>
+<p>聪明的你会选择哪一种方案，你的依据又是什么？想弄清楚这些，就需要继续往下看</p>
+<h3 id="认识数据"><a href="#认识数据" class="headerlink" title="认识数据"></a>认识数据</h3><p>看接口先看数据，所有的接口都是为了操作数据。对数据了解多深刻，也就大概限制了对接口认识多深刻。</p>
+<p>数据在用户侧以  <a href="https://www.cyningsun.com/06-29-2020/how-to-write-restful-api.html">hyper media</a>  存在；数据流到服务中以对象来组织；数据落到存储里就变成了<code>id</code> + <code>content</code>。索引 <code>content</code> 的 id，一般又以 <code>单个</code> 和 <code>集合</code> 的形态存在，具体到数据库中，id 以 聚簇索引存在，content 以聚簇索引叶节点存在</p>
+<p><img src="/images/Data=ID+Content.png" alt=""></p>
+<p>越来越多的产品按照先获取 <code>id</code> 再读取 <code>content</code> 来访问数据，之前是搜索引擎，现在是各式各样的内容推荐</p>
+<h3 id="认识操作"><a href="#认识操作" class="headerlink" title="认识操作"></a>认识操作</h3><p>有了对数据的基本认识，对数据的操作无非是：增、删、改、查（包括：ID / 内容列表查询、根据 ID 批量查询内容）</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>有了以上这些认知，那么如何为服务设计收敛的接口，也就不再是个问题。</p>
+<br/>
+
+<h4 id="课后作业"><a href="#课后作业" class="headerlink" title="课后作业"></a>课后作业</h4><p>请为以下需求设计一套查询的API接口</p>
+<p><strong>主播侧需求</strong></p>
+<p>当主播点开直播直播入口时</p>
+<ul>
+<li>如果有未开始的直播，则进行直播设置；</li>
+<li>如果有进行中的直播，则直接进入该场直播；</li>
+<li>如果没有进行中的直播<ul>
+<li>第一次直播，则创建一场新的直播</li>
+<li>第一场之外的直播，则使用上一场直播的设置，创建一场新的未开始的直播。</li>
+</ul>
+</li>
+</ul>
+<p><strong>用户侧</strong></p>
+<p>当用户点开直播间时</p>
+<ul>
+<li>获取该直播的所有信息，包括：<ul>
+<li>主播信息</li>
+<li>直播信息</li>
+<li>是否关注该主播</li>
+<li>在线人数</li>
+<li>点赞数</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<p><strong>本文作者</strong>：cyningsun<br /><strong>本文地址</strong>： <a href="https://www.cyningsun.com/07-27-2020/how-to-write-rpc-interface.html">https://www.cyningsun.com/07-27-2020/how-to-write-rpc-interface.html</a> <br /><strong>版权声明</strong>：本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/" target="_blank" rel="noopener">CC BY-NC-ND 3.0 CN</a> 许可协议。转载请注明出处！</p>
 
     </div>
     
@@ -212,10 +261,8 @@ gtag('config', 'UA-156665333-1');
 
     <ul class="pager">
      
-     <li class="next"><a href="/07-27-2020/how-to-write-rpc-interface.html">Newer &rarr;</a></li>
     
-    
-    <li class="previous"><a href="/07-04-2020/how-to-naming-things.html">&larr; Older</a></li>
+    <li class="previous"><a href="/07-22-2020/software-development-methodology.html">&larr; Older</a></li>
     
 </ul>
 </div>
@@ -238,7 +285,7 @@ gtag('config', 'UA-156665333-1');
         repo: 'blog_comment',
         admin: ['cyningsun'],
         labels:['gitment'],
-        id: '2020-07-22 00:00:00 +0800',
+        id: '2020-07-27 00:00:00 +0800',
         distractionFreeMode: true  // Facebook-like distraction free mode
       })
       gitalk.render('container')
